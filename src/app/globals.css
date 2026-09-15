@@ -68,7 +68,6 @@ body {
 }
 
 .leaflet-popup-tip {
-  background-color: rgba(15, 23, 42, 0.95) !remote;
   background-color: #0f172a !important;
 }
 
