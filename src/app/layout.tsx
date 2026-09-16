@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import { ThemeSync } from '@/components/layout/ThemeSync';
 import { APP_CONFIG } from '@/constants/config';
 
 const inter = Inter({
@@ -40,10 +41,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="light" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} min-h-screen bg-slate-950 font-sans text-slate-100 antialiased flex flex-col justify-between selection:bg-cyan-500/30 selection:text-cyan-200`}
+        className={`${inter.variable} ${jetbrainsMono.variable} min-h-screen bg-slate-50 font-sans text-slate-900 antialiased flex flex-col justify-between dark:bg-slate-950 dark:text-slate-100 selection:bg-cyan-500/20 selection:text-cyan-700 dark:selection:bg-cyan-500/30 dark:selection:text-cyan-200 transition-colors duration-200`}
       >
+        <ThemeSync />
         <Header />
         <main className="flex-1">
           {children}
