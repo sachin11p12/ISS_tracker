@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Gauge, Navigation, Compass, Sun, Moon, Radio, ArrowUpRight, Sparkles } from 'lucide-react';
+import { Gauge, Navigation, Compass, Sun, Moon, Radio, ArrowUpRight } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardValue } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Loading';
@@ -16,7 +16,7 @@ import {
 } from '@/lib/utils';
 
 export function ISSStats() {
-  const { telemetry, isLoading, error } = useISSLocation();
+  const { telemetry, isLoading } = useISSLocation();
   const { unitSystem } = useISSStore();
 
   if (isLoading && !telemetry) {
@@ -39,10 +39,10 @@ export function ISSStats() {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {/* Velocity / Speed */}
-      <Card glow className="group hover:border-cyan-500/40">
+      <Card glow className="group hover:border-cyan-400 dark:hover:border-cyan-500/40">
         <CardHeader>
           <CardTitle>
-            <Gauge className="h-4 w-4 text-cyan-400" />
+            <Gauge className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
             Orbital Velocity
           </CardTitle>
           <Badge variant="cyan" size="sm">
@@ -50,19 +50,19 @@ export function ISSStats() {
           </Badge>
         </CardHeader>
         <CardValue>{formatSpeed(telemetry.velocity, unitSystem)}</CardValue>
-        <div className="mt-2 flex items-center justify-between text-xs text-slate-400 font-mono">
-          <span>Speed relative to Earth</span>
-          <span className="text-cyan-400 flex items-center">
+        <div className="mt-2 flex items-center justify-between text-xs text-slate-500 font-mono dark:text-slate-400">
+          <span>Relative to Earth</span>
+          <span className="text-cyan-700 dark:text-cyan-400 font-semibold flex items-center">
             ~7.66 km/s <ArrowUpRight className="h-3 w-3 inline ml-0.5" />
           </span>
         </div>
       </Card>
 
       {/* Altitude */}
-      <Card glow className="group hover:border-blue-500/40">
+      <Card glow className="group hover:border-blue-400 dark:hover:border-blue-500/40">
         <CardHeader>
           <CardTitle>
-            <Navigation className="h-4 w-4 text-blue-400" />
+            <Navigation className="h-4 w-4 text-blue-600 dark:text-blue-400" />
             Altitude (LEO)
           </CardTitle>
           <Badge variant="purple" size="sm">
@@ -70,17 +70,17 @@ export function ISSStats() {
           </Badge>
         </CardHeader>
         <CardValue>{formatAltitude(telemetry.altitude, unitSystem)}</CardValue>
-        <div className="mt-2 flex items-center justify-between text-xs text-slate-400 font-mono">
+        <div className="mt-2 flex items-center justify-between text-xs text-slate-500 font-mono dark:text-slate-400">
           <span>Low Earth Orbit</span>
-          <span className="text-blue-400">Stable Orbit</span>
+          <span className="text-blue-600 dark:text-blue-400 font-semibold">Stable Orbit</span>
         </div>
       </Card>
 
       {/* Coordinates */}
-      <Card glow className="group hover:border-emerald-500/40">
+      <Card glow className="group hover:border-emerald-400 dark:hover:border-emerald-500/40">
         <CardHeader>
           <CardTitle>
-            <Compass className="h-4 w-4 text-emerald-400" />
+            <Compass className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
             Coordinates
           </CardTitle>
           <Badge variant="emerald" size="sm">
@@ -88,27 +88,27 @@ export function ISSStats() {
           </Badge>
         </CardHeader>
         <div className="space-y-1">
-          <div className="text-lg font-bold font-mono text-emerald-300">
+          <div className="text-lg font-bold font-mono text-emerald-700 dark:text-emerald-300">
             {formatLatitude(telemetry.latitude)}
           </div>
-          <div className="text-lg font-bold font-mono text-emerald-400">
+          <div className="text-lg font-bold font-mono text-emerald-600 dark:text-emerald-400">
             {formatLongitude(telemetry.longitude)}
           </div>
         </div>
-        <div className="mt-2 flex items-center justify-between text-xs text-slate-400 font-mono">
+        <div className="mt-2 flex items-center justify-between text-xs text-slate-500 font-mono dark:text-slate-400">
           <span>Inclination</span>
-          <span className="text-emerald-300">51.64°</span>
+          <span className="text-emerald-700 dark:text-emerald-300 font-semibold">51.64°</span>
         </div>
       </Card>
 
       {/* Solar Illumination & Footprint */}
-      <Card glow className="group hover:border-amber-500/40">
+      <Card glow className="group hover:border-amber-400 dark:hover:border-amber-500/40">
         <CardHeader>
           <CardTitle>
             {isDaylight ? (
-              <Sun className="h-4 w-4 text-amber-400" />
+              <Sun className="h-4 w-4 text-amber-500" />
             ) : (
-              <Moon className="h-4 w-4 text-indigo-400" />
+              <Moon className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
             )}
             Orbital Visibility
           </CardTitle>
@@ -119,12 +119,12 @@ export function ISSStats() {
         <CardValue className="text-xl">
           {isDaylight ? 'Solar Power Active' : 'Battery Storage'}
         </CardValue>
-        <div className="mt-2 flex items-center justify-between text-xs text-slate-400 font-mono">
+        <div className="mt-2 flex items-center justify-between text-xs text-slate-500 font-mono dark:text-slate-400">
           <span className="flex items-center gap-1">
-            <Radio className="h-3 w-3 text-amber-400" />
+            <Radio className="h-3 w-3 text-amber-500" />
             Footprint:
           </span>
-          <span className="text-amber-300">
+          <span className="text-amber-700 dark:text-amber-300 font-semibold">
             {formatFootprint(telemetry.footprint, unitSystem)}
           </span>
         </div>
