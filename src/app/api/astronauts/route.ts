@@ -3,75 +3,39 @@ import { Astronaut, AstronautsData } from '@/types/iss';
 
 export const dynamic = 'force-dynamic';
 
-const VERIFIED_EXPEDITION_CREW: Array<{ name: string; craft: string }> = [
-  { name: 'Sunita Williams', craft: 'ISS' },
-  { name: 'Butch Wilmore', craft: 'ISS' },
-  { name: 'Don Pettit', craft: 'ISS' },
-  { name: 'Nick Hague', craft: 'ISS' },
-  { name: 'Alexey Ovchinin', craft: 'ISS' },
-  { name: 'Ivan Vagner', craft: 'ISS' },
-  { name: 'Aleksandr Gorbunov', craft: 'ISS' },
-  { name: 'Cai Xuzhe', craft: 'Tiangong' },
-  { name: 'Song Lingdong', craft: 'Tiangong' },
-  { name: 'Wang Haoze', craft: 'Tiangong' },
-];
+function getFlagEmoji(countryCode?: string): string {
+  if (!countryCode || countryCode.length !== 2) return '🌍';
+  const codePoints = countryCode
+    .toUpperCase()
+    .split('')
+    .map((char) => 127397 + char.charCodeAt(0));
+  return String.fromCodePoint(...codePoints);
+}
 
-const ASTRONAUT_METADATA_MAP: Record<string, Partial<Astronaut>> = {
-  'Oleg Kononenko': { agency: 'Roscosmos', role: 'Commander', nationality: 'Russian', flag: '🇷🇺' },
-  'Nikolai Chub': { agency: 'Roscosmos', role: 'Flight Engineer', nationality: 'Russian', flag: '🇷🇺' },
-  'Tracy Caldwell Dyson': { agency: 'NASA', role: 'Flight Engineer', nationality: 'American', flag: '🇺🇸' },
-  'Matthew Dominick': { agency: 'NASA', role: 'Commander (Crew-8)', nationality: 'American', flag: '🇺🇸' },
-  'Michael Barratt': { agency: 'NASA', role: 'Pilot (Crew-8)', nationality: 'American', flag: '🇺🇸' },
-  'Jeanette Epps': { agency: 'NASA', role: 'Mission Specialist', nationality: 'American', flag: '🇺🇸' },
-  'Alexander Grebenkin': { agency: 'Roscosmos', role: 'Mission Specialist', nationality: 'Russian', flag: '🇷🇺' },
-  'Sunita Williams': { agency: 'NASA', role: 'Commander / Test Pilot', nationality: 'American', flag: '🇺🇸' },
-  'Butch Wilmore': { agency: 'NASA', role: 'Pilot / Flight Engineer', nationality: 'American', flag: '🇺🇸' },
-  'Don Pettit': { agency: 'NASA', role: 'Flight Engineer', nationality: 'American', flag: '🇺🇸' },
-  'Alexey Ovchinin': { agency: 'Roscosmos', role: 'Commander', nationality: 'Russian', flag: '🇷🇺' },
-  'Ivan Vagner': { agency: 'Roscosmos', role: 'Flight Engineer', nationality: 'Russian', flag: '🇷🇺' },
-  'Nick Hague': { agency: 'NASA', role: 'Commander (Crew-9)', nationality: 'American', flag: '🇺🇸' },
-  'Aleksandr Gorbunov': { agency: 'Roscosmos', role: 'Mission Specialist', nationality: 'Russian', flag: '🇷🇺' },
-  'Li Guangsu': { agency: 'CMSA', role: 'Astronaut', nationality: 'Chinese', flag: '🇨🇳' },
-  'Li Cong': { agency: 'CMSA', role: 'Astronaut', nationality: 'Chinese', flag: '🇨🇳' },
-  'Ye Guangfu': { agency: 'CMSA', role: 'Commander (Shenzhou 18)', nationality: 'Chinese', flag: '🇨🇳' },
-  'Cai Xuzhe': { agency: 'CMSA', role: 'Commander (Shenzhou 19)', nationality: 'Chinese', flag: '🇨🇳' },
-  'Song Lingdong': { agency: 'CMSA', role: 'Flight Engineer', nationality: 'Chinese', flag: '🇨🇳' },
-  'Wang Haoze': { agency: 'CMSA', role: 'Payload Specialist', nationality: 'Chinese', flag: '🇨🇳' },
-};
-
-function enrichAstronaut(raw: { name: string; craft: string }, index: number): Astronaut {
-  const meta = ASTRONAUT_METADATA_MAP[raw.name] || {};
-  let defaultAgency = 'International Partner';
-  let defaultFlag = '🌍';
-  let defaultRole = 'Flight Engineer';
-
-  if (raw.craft.toLowerCase().includes('tiangong') || raw.craft.toLowerCase().includes('shenzhou')) {
-    defaultAgency = 'CMSA (China)';
-    defaultFlag = '🇨🇳';
-    defaultRole = 'Taikonaut';
-  } else if (raw.craft.toLowerCase().includes('iss')) {
-    defaultAgency = 'NASA / Roscosmos';
-  }
-
-  return {
-    id: `astro-${index + 1}-${raw.name.toLowerCase().replace(/\s+/g, '-')}`,
-    name: raw.name,
-    craft: raw.craft,
-    agency: meta.agency || defaultAgency,
-    role: meta.role || defaultRole,
-    nationality: meta.nationality || (raw.craft === 'Tiangong' ? 'Chinese' : 'International'),
-    flag: meta.flag || defaultFlag,
-    bio: `Active mission specialist aboard the ${raw.craft} conducting microgravity scientific experiments and orbital station maintenance.`,
-  };
+interface RawPerson {
+  id?: number | string;
+  name: string;
+  country?: string;
+  flag_code?: string;
+  agency?: string;
+  position?: string;
+  role?: string;
+  spacecraft?: string;
+  craft?: string;
+  iss?: boolean;
+  days_in_space?: number;
+  launched?: number;
+  url?: string;
+  image?: string;
 }
 
 export async function GET() {
-  let peopleRaw: Array<{ name: string; craft: string }> = [];
+  let people: Astronaut[] = [];
+  let issExpedition: number | undefined = undefined;
 
-  // Try fetching live data with safe 3s timeout
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3000);
+    const timeoutId = setTimeout(() => controller.abort(), 6000);
 
     const res = await fetch('https://corquaid.github.io/international-space-station-APIs/JSON/people-in-space.json', {
       signal: controller.signal,
@@ -82,35 +46,189 @@ export async function GET() {
     clearTimeout(timeoutId);
 
     if (res.ok) {
-      const json = await res.json();
-      if (Array.isArray(json.people) && json.people.length > 0) {
-        peopleRaw = json.people;
+      const data = await res.json();
+      issExpedition = data.iss_expedition;
+
+      if (Array.isArray(data.people) && data.people.length > 0) {
+        people = data.people.map((p: RawPerson, idx: number) => {
+          const station = p.iss ? 'ISS' : p.country === 'China' || (p.spacecraft && p.spacecraft.includes('Shenzhou')) ? 'Tiangong' : 'ISS';
+          const flag = p.flag_code ? getFlagEmoji(p.flag_code) : '🌍';
+
+          return {
+            id: `astro-${p.id || idx + 1}-${p.name.toLowerCase().replace(/\s+/g, '-')}`,
+            name: p.name,
+            station,
+            craft: station,
+            spacecraft: p.spacecraft || (p.iss ? 'ISS' : 'Tiangong'),
+            agency: p.agency || (station === 'Tiangong' ? 'CMSA' : 'International Partner'),
+            role: p.position || p.role || 'Flight Engineer',
+            nationality: p.country || (station === 'Tiangong' ? 'China' : 'International'),
+            flag,
+            daysInSpace: p.days_in_space,
+            image: p.image,
+            url: p.url,
+            bio: p.days_in_space !== undefined
+              ? `Currently serving aboard ${station} (${p.spacecraft || station}). Has logged ${p.days_in_space} days in space.`
+              : `Active mission crew specialist aboard the ${station}.`,
+          };
+        });
       }
     }
-  } catch {
-    // Network timeout or external API offline; safe fallback used below
+  } catch (err) {
+    console.warn('Live people-in-space API fetch error:', err);
   }
 
-  // If external fetch failed or was empty, use verified active roster
-  if (!peopleRaw || peopleRaw.length === 0) {
-    peopleRaw = VERIFIED_EXPEDITION_CREW;
+  // Fallback only if the live API is completely unreachable
+  if (people.length === 0) {
+    people = [
+      {
+        id: 'astro-1',
+        name: 'Jessica Meir',
+        station: 'ISS',
+        craft: 'ISS',
+        spacecraft: 'Crew-12 Dragon',
+        agency: 'NASA',
+        role: 'Flight Engineer',
+        nationality: 'United States',
+        flag: '🇺🇸',
+        daysInSpace: 204,
+        bio: 'Currently serving aboard ISS (Crew-12 Dragon). Has logged 204 days in space.',
+      },
+      {
+        id: 'astro-2',
+        name: 'Jack Hathaway',
+        station: 'ISS',
+        craft: 'ISS',
+        spacecraft: 'Crew-12 Dragon',
+        agency: 'NASA',
+        role: 'Flight Engineer',
+        nationality: 'United States',
+        flag: '🇺🇸',
+        daysInSpace: 0,
+        bio: 'Currently serving aboard ISS (Crew-12 Dragon).',
+      },
+      {
+        id: 'astro-3',
+        name: 'Sophie Adenot',
+        station: 'ISS',
+        craft: 'ISS',
+        spacecraft: 'Crew-12 Dragon',
+        agency: 'ESA',
+        role: 'Flight Engineer',
+        nationality: 'France',
+        flag: '🇫🇷',
+        daysInSpace: 0,
+        bio: 'Currently serving aboard ISS (Crew-12 Dragon).',
+      },
+      {
+        id: 'astro-4',
+        name: 'Andrey Fedyaev',
+        station: 'ISS',
+        craft: 'ISS',
+        spacecraft: 'Crew-12 Dragon',
+        agency: 'Roscosmos',
+        role: 'Flight Engineer',
+        nationality: 'Russia',
+        flag: '🇷🇺',
+        daysInSpace: 0,
+        bio: 'Currently serving aboard ISS (Crew-12 Dragon).',
+      },
+      {
+        id: 'astro-5',
+        name: 'Zhu Yangzhu',
+        station: 'Tiangong',
+        craft: 'Tiangong',
+        spacecraft: 'Shenzhou 23',
+        agency: 'CMSA',
+        role: 'Commander',
+        nationality: 'China',
+        flag: '🇨🇳',
+        daysInSpace: 150,
+        bio: 'Currently serving aboard Tiangong (Shenzhou 23). Has logged 150 days in space.',
+      },
+      {
+        id: 'astro-6',
+        name: 'Zhang Zhiyuan',
+        station: 'Tiangong',
+        craft: 'Tiangong',
+        spacecraft: 'Shenzhou 23',
+        agency: 'CMSA',
+        role: 'Pilot',
+        nationality: 'China',
+        flag: '🇨🇳',
+        daysInSpace: 0,
+        bio: 'Currently serving aboard Tiangong (Shenzhou 23).',
+      },
+      {
+        id: 'astro-7',
+        name: 'Lai Ka-ying',
+        station: 'Tiangong',
+        craft: 'Tiangong',
+        spacecraft: 'Shenzhou 23',
+        agency: 'CMSA',
+        role: 'Payload Specialist',
+        nationality: 'China',
+        flag: '🇨🇳',
+        daysInSpace: 0,
+        bio: 'Currently serving aboard Tiangong (Shenzhou 23).',
+      },
+      {
+        id: 'astro-8',
+        name: 'Pyotr Dubrov',
+        station: 'ISS',
+        craft: 'ISS',
+        spacecraft: 'Soyuz MS-29',
+        agency: 'Roscosmos',
+        role: 'Commander',
+        nationality: 'Russia',
+        flag: '🇷🇺',
+        daysInSpace: 355,
+        bio: 'Currently serving aboard ISS (Soyuz MS-29). Has logged 355 days in space.',
+      },
+      {
+        id: 'astro-9',
+        name: 'Anna Kikina',
+        station: 'ISS',
+        craft: 'ISS',
+        spacecraft: 'Soyuz MS-29',
+        agency: 'Roscosmos',
+        role: 'Flight Engineer',
+        nationality: 'Russia',
+        flag: '🇷🇺',
+        daysInSpace: 157,
+        bio: 'Currently serving aboard ISS (Soyuz MS-29). Has logged 157 days in space.',
+      },
+      {
+        id: 'astro-10',
+        name: 'Anil Menon',
+        station: 'ISS',
+        craft: 'ISS',
+        spacecraft: 'Soyuz MS-29',
+        agency: 'NASA',
+        role: 'Flight Engineer',
+        nationality: 'United States',
+        flag: '🇺🇸',
+        daysInSpace: 0,
+        bio: 'Currently serving aboard ISS (Soyuz MS-29).',
+      },
+    ];
   }
-
-  const people = peopleRaw.map((p, idx) => enrichAstronaut(p, idx));
 
   const craftBreakdown: Record<string, number> = {};
   for (const p of people) {
-    craftBreakdown[p.craft] = (craftBreakdown[p.craft] || 0) + 1;
+    const key = p.station || p.craft;
+    craftBreakdown[key] = (craftBreakdown[key] || 0) + 1;
   }
 
-  const data: AstronautsData = {
+  const payload: AstronautsData = {
     count: people.length,
+    issExpedition,
     craftBreakdown,
     people,
     lastUpdated: new Date().toISOString(),
   };
 
-  return NextResponse.json(data, {
+  return NextResponse.json(payload, {
     status: 200,
     headers: {
       'Cache-Control': 'no-store, max-age=0',
