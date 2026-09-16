@@ -18,23 +18,23 @@ export function Badge({
   ...props
 }: BadgeProps) {
   const variantStyles = {
-    cyan: 'bg-cyan-950/80 text-cyan-300 border-cyan-700/50 shadow-cyan-950/50',
-    emerald: 'bg-emerald-950/80 text-emerald-300 border-emerald-700/50 shadow-emerald-950/50',
-    amber: 'bg-amber-950/80 text-amber-300 border-amber-700/50 shadow-amber-950/50',
-    rose: 'bg-rose-950/80 text-rose-300 border-rose-700/50 shadow-rose-950/50',
-    purple: 'bg-purple-950/80 text-purple-300 border-purple-700/50 shadow-purple-950/50',
-    slate: 'bg-slate-800/80 text-slate-300 border-slate-700/60 shadow-slate-950/50',
-    outline: 'bg-transparent text-slate-300 border-slate-700',
+    cyan: 'bg-cyan-50 text-cyan-800 border-cyan-300 dark:bg-cyan-950/80 dark:text-cyan-300 dark:border-cyan-700/50',
+    emerald: 'bg-emerald-50 text-emerald-800 border-emerald-300 dark:bg-emerald-950/80 dark:text-emerald-300 dark:border-emerald-700/50',
+    amber: 'bg-amber-50 text-amber-800 border-amber-300 dark:bg-amber-950/80 dark:text-amber-300 dark:border-amber-700/50',
+    rose: 'bg-rose-50 text-rose-800 border-rose-300 dark:bg-rose-950/80 dark:text-rose-300 dark:border-rose-700/50',
+    purple: 'bg-purple-50 text-purple-800 border-purple-300 dark:bg-purple-950/80 dark:text-purple-300 dark:border-purple-700/50',
+    slate: 'bg-slate-100 text-slate-800 border-slate-300 dark:bg-slate-800/80 dark:text-slate-300 dark:border-slate-700/60',
+    outline: 'bg-transparent text-slate-700 border-slate-300 dark:text-slate-300 dark:border-slate-700',
   };
 
   const dotColors = {
-    cyan: 'bg-cyan-400',
-    emerald: 'bg-emerald-400',
-    amber: 'bg-amber-400',
-    rose: 'bg-rose-400',
-    purple: 'bg-purple-400',
-    slate: 'bg-slate-400',
-    outline: 'bg-slate-300',
+    cyan: 'bg-cyan-500 dark:bg-cyan-400',
+    emerald: 'bg-emerald-500 dark:bg-emerald-400',
+    amber: 'bg-amber-500 dark:bg-amber-400',
+    rose: 'bg-rose-500 dark:bg-rose-400',
+    purple: 'bg-purple-500 dark:bg-purple-400',
+    slate: 'bg-slate-500 dark:bg-slate-400',
+    outline: 'bg-slate-500 dark:bg-slate-300',
   };
 
   const sizeStyles = {
@@ -46,7 +46,7 @@ export function Badge({
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-full border shadow-sm backdrop-blur-sm transition-all select-none',
+        'inline-flex items-center rounded-full border shadow-xs backdrop-blur-xs transition-all select-none',
         variantStyles[variant],
         sizeStyles[size],
         className
