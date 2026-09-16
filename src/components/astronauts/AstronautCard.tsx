@@ -15,15 +15,15 @@ export function AstronautCard({ astronaut }: AstronautCardProps) {
     <Card
       glow
       interactive
-      className="flex flex-col justify-between border-slate-200 bg-white/90 hover:border-cyan-400 dark:border-slate-800/80 dark:bg-slate-950/80 dark:hover:border-cyan-500/40 transition-all duration-300 group"
+      className="flex flex-col justify-between border-slate-200 bg-white hover:border-cyan-400 hover:shadow-md transition-all duration-300 group dark:border-slate-800/80 dark:bg-slate-950/80 dark:hover:border-cyan-500/40"
     >
       <div>
         {/* Header with craft badge and flag */}
-        <div className="flex items-start justify-between gap-2 border-b border-slate-200/80 pb-3 mb-3 dark:border-slate-800/60">
+        <div className="flex items-start justify-between gap-2 border-b border-slate-100 pb-3 mb-3 dark:border-slate-800/60">
           <Badge
             variant={isTiangong ? 'amber' : 'cyan'}
             size="sm"
-            className="font-mono font-semibold"
+            className="font-mono font-bold"
           >
             <Rocket className="h-3 w-3" />
             <span>{astronaut.craft}</span>
@@ -33,7 +33,7 @@ export function AstronautCard({ astronaut }: AstronautCardProps) {
             <span className="text-base" role="img" aria-label={astronaut.nationality}>
               {astronaut.flag || '🌍'}
             </span>
-            <span className="text-slate-500 dark:text-slate-400 font-medium">{astronaut.nationality}</span>
+            <span className="text-slate-600 dark:text-slate-400 font-semibold">{astronaut.nationality}</span>
           </div>
         </div>
 
@@ -47,7 +47,7 @@ export function AstronautCard({ astronaut }: AstronautCardProps) {
               <h4 className="text-base font-bold text-slate-900 group-hover:text-cyan-700 transition-colors dark:text-slate-100 dark:group-hover:text-cyan-300">
                 {astronaut.name}
               </h4>
-              <p className="text-xs text-cyan-700 dark:text-cyan-400 font-mono font-medium flex items-center gap-1">
+              <p className="text-xs text-cyan-700 dark:text-cyan-400 font-mono font-semibold flex items-center gap-1">
                 <Shield className="h-3 w-3" />
                 {astronaut.role || 'Expedition Crew Member'}
               </p>
@@ -61,9 +61,9 @@ export function AstronautCard({ astronaut }: AstronautCardProps) {
       </div>
 
       {/* Agency Footer */}
-      <div className="mt-4 flex items-center justify-between border-t border-slate-200/80 pt-3 text-[11px] font-mono text-slate-500 dark:border-slate-800/60 dark:text-slate-500">
+      <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-[11px] font-mono text-slate-500 dark:border-slate-800/60 dark:text-slate-500">
         <span>Agency:</span>
-        <span className="font-semibold text-slate-700 dark:text-slate-300">{astronaut.agency || 'International'}</span>
+        <span className="font-bold text-slate-700 dark:text-slate-300">{astronaut.agency || 'International'}</span>
       </div>
     </Card>
   );
