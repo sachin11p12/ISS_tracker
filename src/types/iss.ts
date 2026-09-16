@@ -47,6 +47,8 @@ export interface Astronaut {
   id: string;
   name: string;
   craft: string;
+  station: string; // 'ISS' | 'Tiangong'
+  spacecraft?: string;
   agency?: string;
   role?: string;
   nationality?: string;
@@ -54,10 +56,13 @@ export interface Astronaut {
   daysInSpace?: number;
   launchDate?: string;
   bio?: string;
+  image?: string;
+  url?: string;
 }
 
 export interface AstronautsData {
   count: number;
+  issExpedition?: number;
   craftBreakdown: Record<string, number>;
   people: Astronaut[];
   lastUpdated: string;
