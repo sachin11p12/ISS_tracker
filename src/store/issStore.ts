@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { ISSTelemetry, ISSTrailPoint, GeocodedLocation, UnitSystem, MapLayerType } from '@/types/iss';
+import { ISSTelemetry, ISSTrailPoint, GeocodedLocation, UnitSystem, MapLayerType, ThemeMode } from '@/types/iss';
 import { APP_CONFIG } from '@/constants/config';
 
 interface ISSStoreState {
@@ -16,6 +16,7 @@ interface ISSStoreState {
   trail: ISSTrailPoint[];
 
   // User UI Preferences
+  theme: ThemeMode;
   unitSystem: UnitSystem;
   mapLayer: MapLayerType;
   isAutoCenter: boolean;
@@ -28,6 +29,8 @@ interface ISSStoreState {
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
   toggleLive: () => void;
+  setTheme: (theme: ThemeMode) => void;
+  toggleTheme: () => void;
   setUnitSystem: (units: UnitSystem) => void;
   setMapLayer: (layer: MapLayerType) => void;
   setIsAutoCenter: (center: boolean) => void;
@@ -47,8 +50,9 @@ export const useISSStore = create<ISSStoreState>((set) => ({
   refreshCount: 0,
   trail: [],
 
+  theme: 'light',
   unitSystem: 'metric',
-  mapLayer: 'dark',
+  mapLayer: 'light',
   isAutoCenter: true,
   showFootprint: true,
   showOrbitTrail: true,
@@ -81,6 +85,19 @@ export const useISSStore = create<ISSStoreState>((set) => ({
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error, isLoading: false }),
   toggleLive: () => set((state) => ({ isLive: !state.isLive })),
+  setTheme: (theme) =>
+    set((state) => ({
+      theme,
+      mapLayer: theme === 'light' && state.mapLayer === 'dark' ? 'light' : theme === 'dark' && state.mapLayer === 'light' ? 'dark' : state.mapLayer,
+    })),
+  toggleTheme: () =>
+    set((state) => {
+      const nextTheme = state.theme === 'light' ? 'dark' : 'light';
+      return {
+        theme: nextTheme,
+        mapLayer: nextTheme === 'light' && state.mapLayer === 'dark' ? 'light' : nextTheme === 'dark' && state.mapLayer === 'light' ? 'dark' : state.mapLayer,
+      };
+    }),
   setUnitSystem: (unitSystem) => set({ unitSystem }),
   setMapLayer: (mapLayer) => set({ mapLayer }),
   setIsAutoCenter: (isAutoCenter) => set({ isAutoCenter }),

@@ -14,7 +14,7 @@ export const APP_CONFIG = {
 export const API_ENDPOINTS = {
   WHERETHEISS_BASE: 'https://api.wheretheiss.at/v1/satellites/25544',
   WHERETHEISS_COORDINATES: 'https://api.wheretheiss.at/v1/coordinates',
-  ASTROS_API: 'http://api.open-notify.org/astros.json',
+  ASTROS_API: 'https://corquaid.github.io/international-space-station-APIs/JSON/people-in-space.json',
   ASTROS_FALLBACK: 'https://corquaid.github.io/international-space-station-APIs/JSON/people-in-space.json',
 };
 
@@ -28,13 +28,20 @@ export interface TileLayerConfig {
 }
 
 export const MAP_LAYERS: Record<MapLayerType, TileLayerConfig> = {
-  dark: {
-    id: 'dark',
-    name: 'Deep Space (Carto Dark)',
-    url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+  light: {
+    id: 'light',
+    name: 'Clean Light (Carto Positron)',
+    url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
     maxZoom: 19,
     subdomains: ['a', 'b', 'c', 'd'],
+  },
+  streets: {
+    id: 'streets',
+    name: 'Topographic (OSM)',
+    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 19,
   },
   satellite: {
     id: 'satellite',
@@ -43,12 +50,13 @@ export const MAP_LAYERS: Record<MapLayerType, TileLayerConfig> = {
     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
     maxZoom: 18,
   },
-  streets: {
-    id: 'streets',
-    name: 'Topographic (OSM)',
-    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  dark: {
+    id: 'dark',
+    name: 'Deep Space (Carto Dark)',
+    url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
     maxZoom: 19,
+    subdomains: ['a', 'b', 'c', 'd'],
   },
   night: {
     id: 'night',
