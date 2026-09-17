@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
+// In-memory cache for fast instant serving of astronaut images
+const imageCache = new Map<string, { buffer: ArrayBuffer; contentType: string; timestamp: number }>();
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const imageUrl = searchParams.get('url');
@@ -10,12 +14,23 @@ export async function GET(request: NextRequest) {
     return new NextResponse('Missing url parameter', { status: 400 });
   }
 
+  // Check in-memory cache first for instant 0ms response
+  const cached = imageCache.get(imageUrl);
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+    return new NextResponse(cached.buffer, {
+      status: 200,
+      headers: {
+        'Content-Type': cached.contentType,
+        'Cache-Control': 'public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800',
+      },
+    });
+  }
+
   try {
     const res = await fetch(imageUrl, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'User-Agent': 'OrbitalEye-ISSTracker/1.0 (https://github.com/sachin11p12/ISS_tracker; dev@isstracker.org)',
         'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
-        'Referer': 'https://wikipedia.org/',
       },
     });
 
@@ -25,6 +40,13 @@ export async function GET(request: NextRequest) {
 
     const contentType = res.headers.get('content-type') || 'image/jpeg';
     const imageBuffer = await res.arrayBuffer();
+
+    // Cache in memory
+    imageCache.set(imageUrl, {
+      buffer: imageBuffer,
+      contentType,
+      timestamp: Date.now(),
+    });
 
     return new NextResponse(imageBuffer, {
       status: 200,
