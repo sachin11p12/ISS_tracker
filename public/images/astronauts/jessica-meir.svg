@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#020617"/>
+      <stop offset="50%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#0369a1"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="visor" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="40%" stop-color="#f59e0b"/>
+      <stop offset="70%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="suit" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="60%" stop-color="#e2e8f0"/>
+      <stop offset="100%" stop-color="#94a3b8"/>
+    </linearGradient>
+    <linearGradient id="patch" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="800" fill="url(#bg)"/>
+  <circle cx="300" cy="280" r="240" fill="url(#glow)"/>
+
+  <!-- Stars -->
+  <g fill="#ffffff" opacity="0.6">
+    <circle cx="80" cy="90" r="1.5"/>
+    <circle cx="150" cy="140" r="2"/>
+    <circle cx="520" cy="110" r="2.5"/>
+    <circle cx="480" cy="200" r="1.5"/>
+    <circle cx="70" cy="320" r="2"/>
+    <circle cx="530" cy="380" r="1.5"/>
+    <circle cx="110" cy="450" r="2.5"/>
+    <circle cx="500" cy="500" r="1.5"/>
+  </g>
+
+  <!-- Distant Earth Limb Curve -->
+  <path d="M-100,750 Q300,580 700,750 L700,800 L-100,800 Z" fill="#0284c7" opacity="0.25"/>
+
+  <!-- Spacesuit Torso & Shoulders -->
+  <g transform="translate(300, 480)">
+    <!-- Main Upper Torso -->
+    <path d="M-220,320 C-210,120 -150,40 -90,10 C-40,-5 40,-5 90,10 C150,40 210,120 220,320 Z" fill="url(#suit)"/>
+    
+    <!-- Chest Pack (PLSS Front Interface) -->
+    <rect x="-100" y="70" width="200" height="180" rx="16" fill="#cbd5e1" stroke="#94a3b8" stroke-width="3"/>
+    <rect x="-85" y="85" width="170" height="150" rx="10" fill="#0f172a"/>
+    
+    <!-- Chest Controls / Status Gauges -->
+    <circle cx="-50" cy="120" r="14" fill="#0284c7" stroke="#38bdf8" stroke-width="2"/>
+    <circle cx="0" cy="120" r="14" fill="#10b981" stroke="#34d399" stroke-width="2"/>
+    <circle cx="50" cy="120" r="14" fill="#f59e0b" stroke="#fcd34d" stroke-width="2"/>
+    
+    <rect x="-60" y="160" width="120" height="8" rx="4" fill="#38bdf8" opacity="0.8"/>
+    <rect x="-60" y="180" width="80" height="8" rx="4" fill="#38bdf8" opacity="0.5"/>
+    <rect x="-60" y="200" width="100" height="8" rx="4" fill="#38bdf8" opacity="0.6"/>
+
+    <!-- NASA Meatball / Agency Badge -->
+    <g transform="translate(-140, 90)">
+      <circle cx="0" cy="0" r="28" fill="#0b3d91" stroke="#ffffff" stroke-width="2"/>
+      <ellipse cx="0" cy="0" rx="24" ry="10" fill="none" stroke="#e11d48" stroke-width="3" transform="rotate(-25)"/>
+      <text x="0" y="5" fill="#ffffff" font-family="sans-serif" font-size="11" font-weight="900" text-anchor="middle" letter-spacing="1">NASA</text>
+    </g>
+
+    <!-- US Flag Patch -->
+    <g transform="translate(140, 90)">
+      <rect x="-24" y="-16" width="48" height="32" rx="4" fill="#0b3d91" stroke="#ffffff" stroke-width="1.5"/>
+      <rect x="-24" y="-16" width="48" height="16" fill="#e11d48"/>
+      <rect x="-24" y="-8" width="48" height="8" fill="#ffffff"/>
+      <rect x="-24" y="0" width="48" height="8" fill="#e11d48"/>
+      <rect x="-24" y="8" width="48" height="8" fill="#ffffff"/>
+      <rect x="-24" y="-16" width="22" height="18" fill="#1e3a8a"/>
+    </g>
+
+    <!-- Neck Ring Connection -->
+    <ellipse cx="0" cy="10" rx="90" ry="24" fill="#94a3b8" stroke="#64748b" stroke-width="4"/>
+    <ellipse cx="0" cy="6" rx="80" ry="18" fill="#cbd5e1"/>
+  </g>
+
+  <!-- Helmet & Gold Visor -->
+  <g transform="translate(300, 270)">
+    <!-- Outer Helmet Shell -->
+    <ellipse cx="0" cy="0" rx="140" ry="155" fill="url(#suit)" stroke="#94a3b8" stroke-width="4"/>
+    
+    <!-- Helmet Visor Frame -->
+    <ellipse cx="0" cy="5" rx="118" ry="128" fill="#0f172a" stroke="#475569" stroke-width="6"/>
+    
+    <!-- Gold / Polarized Visor with Earth Reflection -->
+    <ellipse cx="0" cy="5" rx="112" ry="122" fill="url(#visor)"/>
+    
+    <!-- Reflection Highlights in Visor (ISS solar arrays & Earth limb) -->
+    <path d="M-60,-50 Q0,-75 60,-50 Q40,-20 -60,-50 Z" fill="#ffffff" opacity="0.6"/>
+    <ellipse cx="-40" cy="-20" rx="20" ry="8" fill="#ffffff" opacity="0.4" transform="rotate(-15 -40 -20)"/>
+    
+    <!-- ISS Solar Array Reflection Silhouette -->
+    <g opacity="0.25" transform="translate(10, 10)">
+      <rect x="-40" y="-10" width="80" height="4" fill="#ffffff"/>
+      <rect x="-35" y="-22" width="20" height="10" fill="#38bdf8"/>
+      <rect x="-10" y="-22" width="20" height="10" fill="#38bdf8"/>
+      <rect x="15" y="-22" width="20" height="10" fill="#38bdf8"/>
+    </g>
+  </g>
+
+  <!-- Lower Banner with Name & Mission -->
+  <g transform="translate(300, 720)">
+    <rect x="-240" y="-35" width="480" height="70" rx="16" fill="#0f172a" fill-opacity="0.9" stroke="#38bdf8" stroke-width="1.5"/>
+    <text x="0" y="-5" fill="#f8fafc" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="800" text-anchor="middle" letter-spacing="1">JESSICA MEIR</text>
+    <text x="0" y="20" fill="#38bdf8" font-family="monospace" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2">NASA ASTRONAUT • EXPEDITION 75</text>
+  </g>
+</svg>

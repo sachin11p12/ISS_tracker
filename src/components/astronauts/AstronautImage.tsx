@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { User } from 'lucide-react';
+import { User, Sparkles } from 'lucide-react';
 
 interface AstronautImageProps {
   src?: string;
@@ -9,6 +9,7 @@ interface AstronautImageProps {
   className?: string;
   fallbackClassName?: string;
   iconClassName?: string;
+  priority?: boolean;
 }
 
 export function AstronautImage({
@@ -18,18 +19,35 @@ export function AstronautImage({
   fallbackClassName = 'flex h-full w-full items-center justify-center bg-gradient-to-b from-slate-100 to-slate-200 text-slate-400 dark:from-slate-900 dark:to-slate-950 dark:text-slate-600',
   iconClassName = 'h-20 w-20 stroke-[1.2]',
 }: AstronautImageProps) {
-  const [hasError, setHasError] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [imgStage, setImgStage] = useState<'primary' | 'proxy' | 'local' | 'fallback'>('primary');
 
-  // If image URL is remote (like wikimedia), route through our image proxy
-  const resolvedSrc = src
-    ? src.startsWith('http')
-      ? `/api/image-proxy?url=${encodeURIComponent(src)}`
-      : src
-    : undefined;
+  const slug = alt.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const localSrc = `/images/astronauts/${slug}.svg`;
 
-  // If no src or error loading
-  if (!resolvedSrc || hasError) {
+  // Determine current source based on fallback stage
+  let currentSrc: string | undefined;
+  if (imgStage === 'primary' && src) {
+    currentSrc = src;
+  } else if (imgStage === 'proxy' && src && src.startsWith('http')) {
+    currentSrc = `/api/image-proxy?url=${encodeURIComponent(src)}`;
+  } else if (imgStage === 'local' || (imgStage === 'primary' && !src)) {
+    currentSrc = localSrc;
+  }
+
+  const handleError = () => {
+    if (imgStage === 'primary' && src?.startsWith('http')) {
+      // Try proxy next
+      setImgStage('proxy');
+    } else if (imgStage === 'proxy' || (imgStage === 'primary' && !src?.startsWith('http'))) {
+      // Try local image next
+      setImgStage('local');
+    } else {
+      // Final fallback to stylized card
+      setImgStage('fallback');
+    }
+  };
+
+  if (imgStage === 'fallback' || !currentSrc) {
     const initials = alt
       .split(' ')
       .map((part) => part[0])
@@ -39,32 +57,33 @@ export function AstronautImage({
 
     return (
       <div className={fallbackClassName}>
-        <div className="flex flex-col items-center justify-center gap-2">
-          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-cyan-100 text-cyan-800 text-2xl font-bold font-mono border border-cyan-300 shadow-xs dark:bg-cyan-950 dark:text-cyan-300 dark:border-cyan-800">
+        <div className="flex flex-col items-center justify-center gap-3 p-6 text-center">
+          <div className="flex h-24 w-24 items-center justify-center rounded-3xl bg-linear-to-tr from-cyan-500/20 to-blue-600/20 text-cyan-600 text-3xl font-black font-mono border-2 border-cyan-400/40 shadow-lg dark:text-cyan-300 dark:border-cyan-500/40 backdrop-blur-xs">
             {initials || <User className={iconClassName} />}
           </div>
-          <span className="text-xs font-mono font-semibold text-slate-500 dark:text-slate-400">Flight Crew</span>
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-100 text-cyan-800 text-xs font-mono font-bold dark:bg-cyan-950 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800">
+            <Sparkles className="h-3 w-3" />
+            <span>Active Astronaut</span>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="relative h-full w-full overflow-hidden">
+    <div className="relative h-full w-full overflow-hidden bg-slate-900">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={resolvedSrc}
+        key={`${alt}-${imgStage}`}
+        src={currentSrc}
         alt={alt}
-        className={`${className} ${!isLoaded ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
+        className={className}
+        referrerPolicy="no-referrer"
+        crossOrigin="anonymous"
         loading="eager"
-        onLoad={() => setIsLoaded(true)}
-        onError={() => setHasError(true)}
+        onError={handleError}
       />
-      {!isLoaded && (
-        <div className="absolute inset-0 flex items-center justify-center bg-slate-100 dark:bg-slate-900 animate-pulse">
-          <User className="h-12 w-12 text-slate-400 dark:text-slate-600" />
-        </div>
-      )}
     </div>
   );
 }
+
