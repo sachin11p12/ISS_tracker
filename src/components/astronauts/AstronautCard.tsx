@@ -74,7 +74,7 @@ export function AstronautCard({ astronaut }: AstronautCardProps) {
             </div>
           )}
 
-          <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400">
+          <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 line-clamp-3">
             {astronaut.bio}
           </p>
         </div>
@@ -87,12 +87,10 @@ export function AstronautCard({ astronaut }: AstronautCardProps) {
           </div>
 
           <div className="flex items-center gap-2">
-            {astronaut.daysInSpace !== undefined && (
-              <div className="flex items-center gap-1 font-semibold text-cyan-700 dark:text-cyan-400">
-                <Clock className="h-3.5 w-3.5" />
-                <span>{astronaut.daysInSpace}d</span>
-              </div>
-            )}
+            <div className="flex items-center gap-1 font-semibold text-cyan-700 dark:text-cyan-400">
+              <Clock className="h-3.5 w-3.5" />
+              <span>{astronaut.daysInSpace && astronaut.daysInSpace > 0 ? `${astronaut.daysInSpace}d total` : '1st Flight'}</span>
+            </div>
             {astronaut.url && (
               <a
                 href={astronaut.url}
