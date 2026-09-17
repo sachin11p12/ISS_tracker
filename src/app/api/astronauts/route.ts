@@ -27,6 +27,9 @@ interface RawPerson {
   launched?: number;
   url?: string;
   image?: string;
+  instagram?: string;
+  twitter?: string;
+  facebook?: string;
 }
 
 export async function GET() {
@@ -65,10 +68,15 @@ export async function GET() {
             nationality: p.country || (station === 'Tiangong' ? 'China' : 'International'),
             flag,
             daysInSpace: p.days_in_space,
+            launched: p.launched,
+            launchDate: p.launched ? new Date(p.launched * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : undefined,
             image: p.image,
             url: p.url,
+            instagram: p.instagram,
+            twitter: p.twitter,
+            facebook: p.facebook,
             bio: p.days_in_space !== undefined
-              ? `Currently serving aboard ${station} (${p.spacecraft || station}). Has logged ${p.days_in_space} days in space.`
+              ? `Currently serving aboard ${station} (${p.spacecraft || station}). Has logged ${p.days_in_space} total days in space conducting microgravity scientific experiments and orbital station maintenance.`
               : `Active mission crew specialist aboard the ${station}.`,
           };
         });
@@ -92,7 +100,11 @@ export async function GET() {
         nationality: 'United States',
         flag: '🇺🇸',
         daysInSpace: 204,
-        bio: 'Currently serving aboard ISS (Crew-12 Dragon). Has logged 204 days in space.',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Jessica_Meir_official_portrait_in_an_EMU.jpg',
+        url: 'https://en.wikipedia.org/wiki/Jessica_Meir',
+        instagram: 'https://www.instagram.com/astro_jessica',
+        twitter: 'https://x.com/Astro_Jessica',
+        bio: 'Currently serving aboard ISS (Crew-12 Dragon). Has logged 204 total days in space conducting microgravity scientific experiments.',
       },
       {
         id: 'astro-2',
@@ -105,6 +117,10 @@ export async function GET() {
         nationality: 'United States',
         flag: '🇺🇸',
         daysInSpace: 0,
+        image: 'https://upload.wikimedia.org/wikipedia/commons/8/84/Jack_Hathaway_2024.jpg',
+        url: 'https://en.wikipedia.org/wiki/Jack_Hathaway',
+        instagram: 'https://www.instagram.com/astro_hathaway',
+        twitter: 'https://x.com/astro_hathaway',
         bio: 'Currently serving aboard ISS (Crew-12 Dragon).',
       },
       {
@@ -118,6 +134,10 @@ export async function GET() {
         nationality: 'France',
         flag: '🇫🇷',
         daysInSpace: 0,
+        image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Official_portrait_of_ESA_astronaut_Sophie_Adenot_%28jsc2025e058846_alt%29.jpg/500px-Official_portrait_of_ESA_astronaut_Sophie_Adenot_%28jsc2025e058846_alt%29.jpg',
+        url: 'https://en.wikipedia.org/wiki/Sophie_Adenot',
+        instagram: 'https://www.instagram.com/soph_astro',
+        twitter: 'https://x.com/Soph_astro',
         bio: 'Currently serving aboard ISS (Crew-12 Dragon).',
       },
       {
@@ -131,6 +151,8 @@ export async function GET() {
         nationality: 'Russia',
         flag: '🇷🇺',
         daysInSpace: 0,
+        image: 'https://upload.wikimedia.org/wikipedia/commons/1/1d/SpaceX_crew_6_image_5.png',
+        url: 'https://en.wikipedia.org/wiki/Andrey_Fedyaev',
         bio: 'Currently serving aboard ISS (Crew-12 Dragon).',
       },
       {
@@ -144,7 +166,9 @@ export async function GET() {
         nationality: 'China',
         flag: '🇨🇳',
         daysInSpace: 150,
-        bio: 'Currently serving aboard Tiangong (Shenzhou 23). Has logged 150 days in space.',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/9/97/Zhu_Yangzhu_%2820260523%29.jpg',
+        url: 'https://en.wikipedia.org/wiki/Zhu_Yangzhu',
+        bio: 'Currently serving aboard Tiangong (Shenzhou 23). Has logged 150 total days in space.',
       },
       {
         id: 'astro-6',
@@ -157,6 +181,8 @@ export async function GET() {
         nationality: 'China',
         flag: '🇨🇳',
         daysInSpace: 0,
+        image: 'https://upload.wikimedia.org/wikipedia/commons/6/68/Zhang_Zhiyuan_%2820260523%29.jpg',
+        url: 'https://en.wikipedia.org/wiki/Zhang_Zhiyuan_(astronaut)',
         bio: 'Currently serving aboard Tiangong (Shenzhou 23).',
       },
       {
@@ -170,6 +196,8 @@ export async function GET() {
         nationality: 'China',
         flag: '🇨🇳',
         daysInSpace: 0,
+        image: 'https://upload.wikimedia.org/wikipedia/commons/7/77/Lai_Ka-ying_%2820260523%29.jpg',
+        url: 'https://en.wikipedia.org/wiki/Lai_Ka-ying',
         bio: 'Currently serving aboard Tiangong (Shenzhou 23).',
       },
       {
@@ -183,7 +211,9 @@ export async function GET() {
         nationality: 'Russia',
         flag: '🇷🇺',
         daysInSpace: 355,
-        bio: 'Currently serving aboard ISS (Soyuz MS-29). Has logged 355 days in space.',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/d/d9/Pyotr_Dubrov_in_2021.jpg',
+        url: 'https://en.wikipedia.org/wiki/Pyotr_Dubrov',
+        bio: 'Currently serving aboard ISS (Soyuz MS-29). Has logged 355 total days in space.',
       },
       {
         id: 'astro-9',
@@ -196,7 +226,9 @@ export async function GET() {
         nationality: 'Russia',
         flag: '🇷🇺',
         daysInSpace: 157,
-        bio: 'Currently serving aboard ISS (Soyuz MS-29). Has logged 157 days in space.',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/1/13/Anna_Kikina_Official_Portrait.jpg',
+        url: 'https://en.wikipedia.org/wiki/Anna_Kikina',
+        bio: 'Currently serving aboard ISS (Soyuz MS-29). Has logged 157 total days in space.',
       },
       {
         id: 'astro-10',
@@ -209,6 +241,10 @@ export async function GET() {
         nationality: 'United States',
         flag: '🇺🇸',
         daysInSpace: 0,
+        image: 'https://upload.wikimedia.org/wikipedia/commons/5/59/NASA_Astronaut_Anil_Menon_%28jsc2024e013690_alt%29.jpg',
+        url: 'https://en.wikipedia.org/wiki/Anil_Menon',
+        instagram: 'https://www.instagram.com/astro_anil/',
+        twitter: 'https://x.com/astro_anil',
         bio: 'Currently serving aboard ISS (Soyuz MS-29).',
       },
     ];

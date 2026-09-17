@@ -54,10 +54,14 @@ export interface Astronaut {
   nationality?: string;
   flag?: string;
   daysInSpace?: number;
+  launched?: number;
   launchDate?: string;
   bio?: string;
   image?: string;
   url?: string;
+  instagram?: string;
+  twitter?: string;
+  facebook?: string;
 }
 
 export interface AstronautsData {
