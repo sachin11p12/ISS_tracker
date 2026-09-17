@@ -29,6 +29,13 @@ export async function generateMetadata({ params }: Props) {
   };
 }
 
+function formatDaysDisplay(days?: number): string {
+  if (days && days > 0) {
+    return `${days} Days Total`;
+  }
+  return 'Active Mission (1st Flight)';
+}
+
 export default async function AstronautDetailPage({ params }: Props) {
   const { name } = await params;
   const decodedName = decodeURIComponent(name).trim();
@@ -155,8 +162,8 @@ export default async function AstronautDetailPage({ params }: Props) {
                     <Clock className="h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400" />
                     <span>Time in Space</span>
                   </div>
-                  <div className="text-base sm:text-lg font-bold font-mono text-slate-900 dark:text-slate-100 mt-1">
-                    {astronaut.daysInSpace !== undefined ? `${astronaut.daysInSpace} Days` : 'In Flight'}
+                  <div className="text-sm sm:text-base font-bold font-mono text-slate-900 dark:text-slate-100 mt-1">
+                    {formatDaysDisplay(astronaut.daysInSpace)}
                   </div>
                 </div>
 
