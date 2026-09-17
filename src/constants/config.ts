@@ -79,3 +79,4 @@ export const ISS_MISSION_FACTS = {
   orbitsPerDay: 15.54,
   solarArraySpanMeters: 73,
 };
+  

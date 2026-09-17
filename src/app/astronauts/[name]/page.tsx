@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { fetchAstronauts } from '@/services/issService';
+import { getAstronautsData } from '@/lib/astronautsData';
 import { Astronaut } from '@/types/iss';
 import { Badge } from '@/components/ui/Badge';
 import { AstronautImage } from '@/components/astronauts/AstronautImage';
@@ -33,14 +33,8 @@ export default async function AstronautDetailPage({ params }: Props) {
   const { name } = await params;
   const decodedName = decodeURIComponent(name).trim();
 
-  let astronautsData;
-  try {
-    astronautsData = await fetchAstronauts();
-  } catch (err) {
-    console.error('Failed to load astronauts data:', err);
-  }
-
-  const people = astronautsData?.people || [];
+  const astronautsData = await getAstronautsData();
+  const people = astronautsData.people || [];
 
   // Find matching astronaut by name (case-insensitive)
   const astronaut: Astronaut | undefined = people.find(
