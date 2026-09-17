@@ -1,7 +1,8 @@
 import React from 'react';
+import Link from 'next/link';
 import { Astronaut } from '@/types/iss';
 import { Badge } from '@/components/ui/Badge';
-import { Rocket, User, Shield, ExternalLink, Clock } from 'lucide-react';
+import { Rocket, User, Shield, ExternalLink, Clock, ChevronRight } from 'lucide-react';
 
 interface AstronautCardProps {
   astronaut: Astronaut;
@@ -9,11 +10,12 @@ interface AstronautCardProps {
 
 export function AstronautCard({ astronaut }: AstronautCardProps) {
   const isTiangong = astronaut.station === 'Tiangong' || astronaut.craft.toLowerCase().includes('tiangong');
+  const profileUrl = `/astronauts/${encodeURIComponent(astronaut.name)}`;
 
   return (
-    <div className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:border-cyan-400 hover:shadow-xl dark:border-slate-800 dark:bg-slate-950/90 dark:hover:border-cyan-500/50">
-      {/* Top Large Astronaut Portrait Photo Banner */}
-      <div className="relative h-64 w-full overflow-hidden bg-slate-100 dark:bg-slate-900">
+    <div className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs transition-all duration-300 hover:border-cyan-400 hover:shadow-xl dark:border-slate-800 dark:bg-slate-950/90 dark:hover:border-cyan-500/50">
+      {/* Top Large Astronaut Portrait Photo Banner (Clickable) */}
+      <Link href={profileUrl} className="relative h-64 w-full overflow-hidden bg-slate-100 dark:bg-slate-900 block cursor-pointer">
         {astronaut.image ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -28,8 +30,8 @@ export function AstronautCard({ astronaut }: AstronautCardProps) {
           </div>
         )}
 
-        {/* Subtle Dark Gradient Overlay at bottom of image for readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+        {/* Subtle Dark Gradient Overlay at bottom of image */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
 
         {/* Floating Badges on top of photo */}
         <div className="absolute top-3 left-3 right-3 flex items-start justify-between gap-2">
@@ -56,24 +58,17 @@ export function AstronautCard({ astronaut }: AstronautCardProps) {
             <h4 className="text-lg font-bold text-white tracking-tight drop-shadow-md group-hover:text-cyan-300 transition-colors">
               {astronaut.name}
             </h4>
-            {astronaut.url && (
-              <a
-                href={astronaut.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                title="View Wikipedia Profile"
-                className="rounded-full bg-white/20 p-1.5 text-white hover:bg-cyan-500 hover:text-white transition-colors backdrop-blur-sm"
-              >
-                <ExternalLink className="h-3.5 w-3.5" />
-              </a>
-            )}
+            <span className="flex items-center gap-1 text-xs text-cyan-300 font-semibold group-hover:translate-x-1 transition-transform">
+              <span>View</span>
+              <ChevronRight className="h-3.5 w-3.5" />
+            </span>
           </div>
           <div className="flex items-center gap-1 text-xs font-mono text-cyan-300 font-medium drop-shadow-sm mt-0.5">
             <Shield className="h-3.5 w-3.5" />
             <span>{astronaut.role || 'Flight Engineer'}</span>
           </div>
         </div>
-      </div>
+      </Link>
 
       {/* Card Content & Bio */}
       <div className="flex flex-1 flex-col justify-between p-4">
@@ -91,19 +86,32 @@ export function AstronautCard({ astronaut }: AstronautCardProps) {
           </p>
         </div>
 
-        {/* Agency and Days in Space Footer */}
+        {/* Agency and Profile Links Footer */}
         <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-xs font-mono text-slate-500 dark:border-slate-800/80 dark:text-slate-400">
           <div>
             <span className="text-slate-400">Agency: </span>
             <span className="font-bold text-slate-800 dark:text-slate-200">{astronaut.agency || 'International'}</span>
           </div>
 
-          {astronaut.daysInSpace !== undefined && (
-            <div className="flex items-center gap-1 font-semibold text-cyan-700 dark:text-cyan-400">
-              <Clock className="h-3.5 w-3.5" />
-              <span>{astronaut.daysInSpace}d in space</span>
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            {astronaut.daysInSpace !== undefined && (
+              <div className="flex items-center gap-1 font-semibold text-cyan-700 dark:text-cyan-400">
+                <Clock className="h-3.5 w-3.5" />
+                <span>{astronaut.daysInSpace}d</span>
+              </div>
+            )}
+            {astronaut.url && (
+              <a
+                href={astronaut.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Wikipedia"
+                className="text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400"
+              >
+                <ExternalLink className="h-3.5 w-3.5" />
+              </a>
+            )}
+          </div>
         </div>
       </div>
     </div>
