@@ -61,8 +61,9 @@ export function formatTimeOnlyUTC(date: Date = new Date()): string {
   const h = pad(date.getUTCHours());
   const m = pad(date.getUTCMinutes());
   const s = pad(date.getUTCSeconds());
-  return `${h}:${m}:${s} UTC`;
+  return `${h}:${m}:${s}`;
 }
+
 
 export function calculateBearing(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const toRad = (deg: number) => (deg * Math.PI) / 180;

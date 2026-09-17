@@ -35,8 +35,8 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl transition-all dark:border-slate-800/80 dark:bg-slate-950/90 shadow-xs">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-3.5 py-2.5 sm:px-6 lg:px-8">
-        {/* Brand & Logo */}
-        <div className="flex items-center gap-4 sm:gap-6">
+        {/* Left: Brand & Logo */}
+        <div className="flex items-center gap-3">
           <Link href="/" className="group flex items-center gap-2.5 sm:gap-3">
             <div className="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-cyan-600 via-sky-500 to-blue-600 p-0.5 shadow-md shadow-cyan-500/15 group-hover:shadow-cyan-500/30 transition-all">
               <div className="flex h-full w-full items-center justify-center rounded-[10px] bg-white dark:bg-slate-950">
@@ -52,44 +52,44 @@ export function Header() {
                   NORAD 25544
                 </span>
               </div>
-              <p className="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-mono tracking-wide hidden md:block">
+              <p className="text-[10px] text-slate-500 dark:text-slate-400 font-mono tracking-wide hidden lg:block">
                 International Space Station Telemetry
               </p>
             </div>
           </Link>
-
-          {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-1 border-l border-slate-200 dark:border-slate-800/80 pl-5">
-            {navLinks.map((link) => {
-              const Icon = link.icon;
-              const active = isLinkActive(link.href);
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={cn(
-                    'flex items-center gap-2 rounded-xl px-3.5 py-1.5 text-xs font-mono font-semibold transition-all',
-                    active
-                      ? 'bg-cyan-50 text-cyan-700 shadow-2xs border border-cyan-200 dark:bg-cyan-950/60 dark:text-cyan-300 dark:border-cyan-800/70'
-                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-slate-200'
-                  )}
-                >
-                  <Icon className={cn('h-4 w-4', active ? 'text-cyan-600 dark:text-cyan-400' : 'text-slate-400')} />
-                  <span>{link.label}</span>
-                </Link>
-              );
-            })}
-          </nav>
         </div>
 
-        {/* Live Controls, Theme Toggle & Telemetry clock */}
-        <div className="flex items-center gap-1.5 sm:gap-2.5">
+        {/* Center: Centered Segmented Navigation Pills Bar */}
+        <nav className="hidden md:flex items-center gap-1 rounded-2xl bg-slate-100/90 p-1 border border-slate-200/80 dark:bg-slate-900/90 dark:border-slate-800/80 shadow-2xs">
+          {navLinks.map((link) => {
+            const Icon = link.icon;
+            const active = isLinkActive(link.href);
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                  'flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-mono font-semibold transition-all',
+                  active
+                    ? 'bg-white text-cyan-700 shadow-xs border border-slate-200/80 dark:bg-slate-800 dark:text-cyan-300 dark:border-slate-700/80'
+                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
+                )}
+              >
+                <Icon className={cn('h-3.5 w-3.5', active ? 'text-cyan-600 dark:text-cyan-400' : 'text-slate-400')} />
+                <span>{link.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Right: Live Controls & Telemetry Clock */}
+        <div className="flex items-center gap-1.5 sm:gap-2">
           {/* Live UTC Clock */}
-          <div className="hidden lg:flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-100/80 px-3 py-1.5 font-mono text-xs text-slate-700 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 shadow-2xs">
+          <div className="hidden sm:flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-100/80 px-2.5 py-1.5 font-mono text-xs text-slate-700 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 shadow-2xs">
             <Radio className="h-3 w-3 text-cyan-500 animate-pulse" />
-            <span className="text-slate-400 font-medium">UTC</span>
+            <span className="text-[10px] font-bold text-slate-400">UTC</span>
             <span className="font-bold text-cyan-700 dark:text-cyan-300 tracking-wider">
-              {mounted && utcTime ? utcTime : '00:00:00 UTC'}
+              {mounted && utcTime ? utcTime : '00:00:00'}
             </span>
           </div>
 
@@ -112,12 +112,12 @@ export function Header() {
             {theme === 'light' ? (
               <>
                 <Sun className="h-3.5 w-3.5 text-amber-500" />
-                <span className="hidden sm:inline">LIGHT</span>
+                <span className="hidden xl:inline">LIGHT</span>
               </>
             ) : (
               <>
                 <Moon className="h-3.5 w-3.5 text-cyan-400" />
-                <span className="hidden sm:inline">DARK</span>
+                <span className="hidden xl:inline">DARK</span>
               </>
             )}
           </button>
