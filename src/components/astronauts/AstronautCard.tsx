@@ -2,7 +2,8 @@ import React from 'react';
 import Link from 'next/link';
 import { Astronaut } from '@/types/iss';
 import { Badge } from '@/components/ui/Badge';
-import { Rocket, User, Shield, ExternalLink, Clock, ChevronRight } from 'lucide-react';
+import { AstronautImage } from '@/components/astronauts/AstronautImage';
+import { Rocket, Shield, ExternalLink, Clock, ChevronRight } from 'lucide-react';
 
 interface AstronautCardProps {
   astronaut: Astronaut;
@@ -16,22 +17,14 @@ export function AstronautCard({ astronaut }: AstronautCardProps) {
     <div className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs transition-all duration-300 hover:border-cyan-400 hover:shadow-xl dark:border-slate-800 dark:bg-slate-950/90 dark:hover:border-cyan-500/50">
       {/* Top Large Astronaut Portrait Photo Banner (Clickable) */}
       <Link href={profileUrl} className="relative h-64 w-full overflow-hidden bg-slate-100 dark:bg-slate-900 block cursor-pointer">
-        {astronaut.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={astronaut.image}
-            alt={astronaut.name}
-            className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-            loading="lazy"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-gradient-to-b from-slate-100 to-slate-200 text-slate-400 dark:from-slate-900 dark:to-slate-950 dark:text-slate-600">
-            <User className="h-20 w-20 stroke-[1.2]" />
-          </div>
-        )}
+        <AstronautImage
+          src={astronaut.image}
+          alt={astronaut.name}
+          className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+        />
 
         {/* Subtle Dark Gradient Overlay at bottom of image */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
 
         {/* Floating Badges on top of photo */}
         <div className="absolute top-3 left-3 right-3 flex items-start justify-between gap-2">

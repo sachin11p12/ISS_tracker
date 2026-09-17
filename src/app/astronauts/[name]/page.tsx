@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { fetchAstronauts } from '@/services/issService';
 import { Astronaut } from '@/types/iss';
 import { Badge } from '@/components/ui/Badge';
+import { AstronautImage } from '@/components/astronauts/AstronautImage';
 import {
   Rocket,
   Shield,
@@ -105,21 +106,14 @@ export default async function AstronautDetailPage({ params }: Props) {
         <div className="grid grid-cols-1 md:grid-cols-12">
           {/* Left Column: Big Portrait Photo */}
           <div className="relative min-h-[380px] md:min-h-[480px] md:col-span-5 bg-slate-100 dark:bg-slate-900 overflow-hidden">
-            {astronaut.image ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={astronaut.image}
-                alt={astronaut.name}
-                className="h-full w-full object-cover object-top"
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center bg-gradient-to-b from-slate-100 to-slate-200 text-slate-400 dark:from-slate-900 dark:to-slate-950 dark:text-slate-600">
-                <User className="h-28 w-28 stroke-[1.2]" />
-              </div>
-            )}
+            <AstronautImage
+              src={astronaut.image}
+              alt={astronaut.name}
+              className="h-full w-full object-cover object-top"
+            />
 
             {/* Gradient Overlay for photo contrast */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:to-black/20" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:to-black/20" />
 
             {/* Overlay Badge for Flag & Nationality */}
             <div className="absolute top-4 left-4 flex items-center gap-2 rounded-full bg-black/65 px-3 py-1.5 text-xs font-mono font-semibold text-white backdrop-blur-md border border-white/20">
@@ -266,18 +260,15 @@ export default async function AstronautDetailPage({ params }: Props) {
                 href={`/astronauts/${encodeURIComponent(crew.name)}`}
                 className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-3.5 shadow-2xs hover:border-cyan-400 hover:shadow-md transition-all dark:border-slate-800 dark:bg-slate-950 dark:hover:border-cyan-500/50"
               >
-                {crew.image ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                <div className="h-12 w-12 shrink-0 rounded-xl overflow-hidden border border-cyan-200 dark:border-cyan-800/40">
+                  <AstronautImage
                     src={crew.image}
                     alt={crew.name}
-                    className="h-12 w-12 shrink-0 rounded-xl object-cover object-top border border-cyan-200 dark:border-cyan-800/40"
+                    className="h-full w-full object-cover object-top"
+                    fallbackClassName="flex h-full w-full items-center justify-center bg-cyan-100 text-cyan-700 text-xs font-bold dark:bg-cyan-950 dark:text-cyan-400"
+                    iconClassName="h-6 w-6"
                   />
-                ) : (
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-cyan-100 text-cyan-700 font-bold dark:bg-cyan-950 dark:text-cyan-400">
-                    <User className="h-6 w-6" />
-                  </div>
-                )}
+                </div>
                 <div className="min-w-0 flex-1">
                   <h4 className="text-sm font-bold text-slate-900 group-hover:text-cyan-700 transition-colors dark:text-slate-100 dark:group-hover:text-cyan-400 truncate">
                     {crew.name}
