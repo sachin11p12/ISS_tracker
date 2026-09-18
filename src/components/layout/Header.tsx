@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Orbit, Users, History, Play, Pause, Gauge, Sun, Moon, Radio } from 'lucide-react';
+import { Orbit, Users, History, Play, Pause, Gauge, Radio } from 'lucide-react';
 import { useISSStore } from '@/store/issStore';
 import { formatTimeOnlyUTC, cn } from '@/lib/utils';
 
@@ -11,7 +11,8 @@ export function Header() {
   const pathname = usePathname();
   const [utcTime, setUtcTime] = useState<string>('');
   const [mounted, setMounted] = useState<boolean>(false);
-  const { isLive, toggleLive, unitSystem, setUnitSystem, theme, toggleTheme } = useISSStore();
+  const { isLive, toggleLive, unitSystem, setUnitSystem } = useISSStore();
+
 
   useEffect(() => {
     setMounted(true);
@@ -103,24 +104,6 @@ export function Header() {
             <span className="uppercase">{unitSystem === 'metric' ? 'KM / KM/H' : 'MI / MPH'}</span>
           </button>
 
-          {/* Theme Switcher Toggle (Light / Dark) */}
-          <button
-            onClick={toggleTheme}
-            title={theme === 'light' ? 'Switch to Dark space theme' : 'Switch to Light theme'}
-            className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-100/80 px-2.5 py-1.5 text-xs font-mono font-semibold text-slate-700 hover:border-slate-300 hover:bg-slate-200/70 transition-all dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-800 cursor-pointer shadow-2xs"
-          >
-            {theme === 'light' ? (
-              <>
-                <Sun className="h-3.5 w-3.5 text-amber-500" />
-                <span className="hidden xl:inline">LIGHT</span>
-              </>
-            ) : (
-              <>
-                <Moon className="h-3.5 w-3.5 text-cyan-400" />
-                <span className="hidden xl:inline">DARK</span>
-              </>
-            )}
-          </button>
 
           {/* Live Stream Status & Toggle */}
           <button
