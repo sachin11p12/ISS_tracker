@@ -185,10 +185,23 @@ export default function ISSGlobe() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
 
     let isRunning = true;
+    let isVisibleOnScreen = true;
+
+    // IntersectionObserver to pause loop completely when offscreen
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisibleOnScreen = entry.isIntersecting;
+        if (isVisibleOnScreen && isRunning) {
+          scheduleRender();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(canvas);
 
     // Projection mathematics from (lat, lng) to 3D Sphere & 2D Screen
     const project = (latDeg: number, lngDeg: number, altitudeRadiusRatio: number = 1.0) => {
@@ -227,11 +240,11 @@ export default function ISSGlobe() {
     };
 
     const render = () => {
-      if (!isRunning) return;
+      if (!isRunning || !isVisibleOnScreen) return;
 
       // Handle Resize / High DPI
       const rect = canvas.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2); // Cap at 2 to avoid mobile lag
       if (canvas.width !== rect.width * dpr || canvas.height !== rect.height * dpr) {
         canvas.width = rect.width * dpr;
         canvas.height = rect.height * dpr;
@@ -298,11 +311,11 @@ export default function ISSGlobe() {
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
         ctx.lineWidth = 0.75;
 
-        // Longitude meridians
+        // Longitude meridians (every 30 deg, step 8 deg)
         for (let lng = -180; lng < 180; lng += 30) {
           ctx.beginPath();
           let first = true;
-          for (let lat = -90; lat <= 90; lat += 3) {
+          for (let lat = -90; lat <= 90; lat += 8) {
             const p = project(lat, lng);
             if (p.isVisible) {
               if (first) {
@@ -318,11 +331,11 @@ export default function ISSGlobe() {
           ctx.stroke();
         }
 
-        // Latitude parallels
-        for (let lat = -75; lat <= 75; lat += 15) {
+        // Latitude parallels (every 30 deg, step 8 deg)
+        for (let lat = -60; lat <= 60; lat += 30) {
           ctx.beginPath();
           let first = true;
-          for (let lng = -180; lng <= 180; lng += 3) {
+          for (let lng = -180; lng <= 180; lng += 8) {
             const p = project(lat, lng);
             if (p.isVisible) {
               if (first) {
@@ -346,6 +359,7 @@ export default function ISSGlobe() {
           }
         }
       }
+
 
       // Draw World Continents & Landmass Polygons
       ctx.fillStyle = '#22c55e'; // Vibrant terrestrial green
