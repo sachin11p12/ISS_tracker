@@ -36,13 +36,10 @@ export function AstronautImage({
 
   const handleError = () => {
     if (imgStage === 'primary' && src?.startsWith('http')) {
-      // Try proxy next
       setImgStage('proxy');
     } else if (imgStage === 'proxy' || (imgStage === 'primary' && !src?.startsWith('http'))) {
-      // Try local image next
       setImgStage('local');
     } else {
-      // Final fallback to stylized card
       setImgStage('fallback');
     }
   };
@@ -58,7 +55,7 @@ export function AstronautImage({
     return (
       <div className={fallbackClassName}>
         <div className="flex flex-col items-center justify-center gap-3 p-6 text-center">
-          <div className="flex h-24 w-24 items-center justify-center rounded-3xl bg-linear-to-tr from-cyan-500/20 to-blue-600/20 text-cyan-600 text-3xl font-black font-mono border-2 border-cyan-400/40 shadow-lg dark:text-cyan-300 dark:border-cyan-500/40 backdrop-blur-xs">
+          <div className="flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-tr from-cyan-500/20 to-blue-600/20 text-cyan-600 text-3xl font-black font-mono border-2 border-cyan-400/40 shadow-lg dark:text-cyan-300 dark:border-cyan-500/40 backdrop-blur-xs">
             {initials || <User className={iconClassName} />}
           </div>
           <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-100 text-cyan-800 text-xs font-mono font-bold dark:bg-cyan-950 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800">
@@ -80,10 +77,10 @@ export function AstronautImage({
         className={className}
         referrerPolicy="no-referrer"
         crossOrigin="anonymous"
-        loading="eager"
+        loading="lazy"
+        decoding="async"
         onError={handleError}
       />
     </div>
   );
 }
-

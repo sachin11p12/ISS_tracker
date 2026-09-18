@@ -3,12 +3,13 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useISSStore } from '@/store/issStore';
 import { formatCoordinates, formatSpeed, formatAltitude, formatFootprint } from '@/lib/utils';
-import { RotateCw, Compass, Crosshair, ZoomIn, ZoomOut, Layers, Eye, Play, Pause, Radio } from 'lucide-react';
+import { Crosshair, ZoomIn, ZoomOut, Play, Pause, Radio } from 'lucide-react';
 import { WORLD_CONTINENTS } from '@/lib/globeLandData';
 
 export default function ISSGlobe() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const animationFrameRef = useRef<number | null>(null);
+  const lastRenderTimeRef = useRef<number>(0);
 
   // Globe orientation (yaw = longitude rotation, pitch = latitude tilt)
   const rotationRef = useRef<{ yaw: number; pitch: number }>({ yaw: 0, pitch: 0 });
@@ -17,6 +18,7 @@ export default function ISSGlobe() {
   const lastMousePosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const autoRotateRef = useRef<boolean>(true);
   const isAutoCenteringRef = useRef<boolean>(false);
+  const needsRenderRef = useRef<boolean>(true);
 
   const [autoRotate, setAutoRotate] = useState<boolean>(true);
   const [showOrbit, setShowOrbit] = useState<boolean>(true);
@@ -28,10 +30,13 @@ export default function ISSGlobe() {
     trail,
     locationDetails,
     unitSystem,
-    isLive,
     showFootprint,
-    setShowFootprint,
   } = useISSStore();
+
+  // Trigger render on demand
+  const triggerRender = useCallback(() => {
+    needsRenderRef.current = true;
+  }, []);
 
   // Smoothly center on ISS
   const centerOnISS = useCallback(() => {
@@ -40,23 +45,22 @@ export default function ISSGlobe() {
     autoRotateRef.current = false;
     setAutoRotate(false);
 
-    // Target yaw and pitch to bring (lat, lng) to the center
     const targetYaw = -telemetry.longitude * (Math.PI / 180) + Math.PI / 2;
     const targetPitch = telemetry.latitude * (Math.PI / 180);
 
     const startYaw = rotationRef.current.yaw;
     const startPitch = rotationRef.current.pitch;
     const startTime = performance.now();
-    const duration = 800; // ms
+    const duration = 650; // ms
 
     const animateCenter = (now: number) => {
       const elapsed = now - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      // Ease out cubic
       const ease = 1 - Math.pow(1 - progress, 3);
 
       rotationRef.current.yaw = startYaw + (targetYaw - startYaw) * ease;
       rotationRef.current.pitch = startPitch + (targetPitch - startPitch) * ease;
+      needsRenderRef.current = true;
 
       if (progress < 1) {
         requestAnimationFrame(animateCenter);
@@ -78,6 +82,7 @@ export default function ISSGlobe() {
       lastMousePosRef.current = { x: e.clientX, y: e.clientY };
       autoRotateRef.current = false;
       setAutoRotate(false);
+      needsRenderRef.current = true;
     };
 
     const onMouseMove = (e: MouseEvent) => {
@@ -93,6 +98,7 @@ export default function ISSGlobe() {
       );
 
       lastMousePosRef.current = { x: e.clientX, y: e.clientY };
+      needsRenderRef.current = true;
     };
 
     const onMouseUp = () => {
@@ -103,6 +109,7 @@ export default function ISSGlobe() {
       e.preventDefault();
       const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
       zoomRef.current = Math.max(0.6, Math.min(3.5, zoomRef.current * zoomFactor));
+      needsRenderRef.current = true;
     };
 
     // Touch events for mobile/tablet
@@ -113,6 +120,7 @@ export default function ISSGlobe() {
         lastMousePosRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
         autoRotateRef.current = false;
         setAutoRotate(false);
+        needsRenderRef.current = true;
       } else if (e.touches.length === 2) {
         lastTouchDist = Math.hypot(
           e.touches[0].clientX - e.touches[1].clientX,
@@ -134,6 +142,7 @@ export default function ISSGlobe() {
         );
 
         lastMousePosRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        needsRenderRef.current = true;
       } else if (e.touches.length === 2) {
         const dist = Math.hypot(
           e.touches[0].clientX - e.touches[1].clientX,
@@ -142,6 +151,7 @@ export default function ISSGlobe() {
         if (lastTouchDist > 0) {
           const factor = dist / lastTouchDist;
           zoomRef.current = Math.max(0.6, Math.min(3.5, zoomRef.current * factor));
+          needsRenderRef.current = true;
         }
         lastTouchDist = dist;
       }
@@ -178,10 +188,11 @@ export default function ISSGlobe() {
     if (telemetry && rotationRef.current.yaw === 0 && rotationRef.current.pitch === 0) {
       rotationRef.current.yaw = -telemetry.longitude * (Math.PI / 180) + Math.PI / 2;
       rotationRef.current.pitch = telemetry.latitude * (Math.PI / 180) * 0.5;
+      triggerRender();
     }
-  }, [telemetry]);
+  }, [telemetry, triggerRender]);
 
-  // Main Canvas Render Loop
+  // Main Canvas Render Loop (Throttled & Offscreen optimized)
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -196,31 +207,30 @@ export default function ISSGlobe() {
       ([entry]) => {
         isVisibleOnScreen = entry.isIntersecting;
         if (isVisibleOnScreen && isRunning) {
-          scheduleRender();
+          needsRenderRef.current = true;
+          animationFrameRef.current = requestAnimationFrame(renderLoop);
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.05 }
     );
     observer.observe(canvas);
 
     // Projection mathematics from (lat, lng) to 3D Sphere & 2D Screen
-    const project = (latDeg: number, lngDeg: number, altitudeRadiusRatio: number = 1.0) => {
+    const project = (latDeg: number, lngDeg: number, altitudeRadiusRatio = 1.0) => {
       const lat = latDeg * (Math.PI / 180);
       const lng = lngDeg * (Math.PI / 180);
 
-      // 3D Cartesian on unit sphere
-      const x0 = Math.cos(lat) * Math.sin(lng);
+      const cosLat = Math.cos(lat);
+      const x0 = cosLat * Math.sin(lng);
       const y0 = Math.sin(lat);
-      const z0 = Math.cos(lat) * Math.cos(lng);
+      const z0 = cosLat * Math.cos(lng);
 
-      // Apply Yaw (around Y axis)
       const cosYaw = Math.cos(rotationRef.current.yaw);
       const sinYaw = Math.sin(rotationRef.current.yaw);
       const x1 = x0 * cosYaw + z0 * sinYaw;
       const y1 = y0;
       const z1 = -x0 * sinYaw + z0 * cosYaw;
 
-      // Apply Pitch (around X axis)
       const cosPitch = Math.cos(rotationRef.current.pitch);
       const sinPitch = Math.sin(rotationRef.current.pitch);
       const x2 = x1;
@@ -234,45 +244,21 @@ export default function ISSGlobe() {
 
       const screenX = width / 2 + x2 * R;
       const screenY = height / 2 - y2 * R;
-      const isVisible = z2 > 0; // On front hemisphere
+      const isVisible = z2 > 0;
 
       return { screenX, screenY, isVisible, z: z2, R: baseRadius };
     };
 
-    const render = () => {
-      if (!isRunning || !isVisibleOnScreen) return;
-
-      // Handle Resize / High DPI
-      const rect = canvas.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 2); // Cap at 2 to avoid mobile lag
-      if (canvas.width !== rect.width * dpr || canvas.height !== rect.height * dpr) {
-        canvas.width = rect.width * dpr;
-        canvas.height = rect.height * dpr;
-      }
-
-      ctx.save();
-      ctx.scale(dpr, dpr);
-      const width = rect.width;
-      const height = rect.height;
+    const drawGlobe = (dpr: number) => {
+      const width = canvas.width / dpr;
+      const height = canvas.height / dpr;
       const centerX = width / 2;
       const centerY = height / 2;
       const radius = (Math.min(width, height) / 2) * 0.72 * zoomRef.current;
 
-      // Clear Canvas & draw clean light space gradient
-      ctx.clearRect(0, 0, width, height);
-
-      // Deep space subtle background gradient
-      const bgGrad = ctx.createRadialGradient(centerX, centerY, radius * 0.2, centerX, centerY, radius * 2.2);
-      bgGrad.addColorStop(0, '#f8fafc');
-      bgGrad.addColorStop(0.5, '#f1f5f9');
-      bgGrad.addColorStop(1, '#e2e8f0');
-      ctx.fillStyle = bgGrad;
+      // Clear & Background
+      ctx.fillStyle = '#f8fafc';
       ctx.fillRect(0, 0, width, height);
-
-      // Auto-rotation increment
-      if (autoRotateRef.current && !isDraggingRef.current && !isAutoCenteringRef.current) {
-        rotationRef.current.yaw += 0.0015;
-      }
 
       // Outer Atmosphere Glow
       const atmoGlow = ctx.createRadialGradient(centerX, centerY, radius * 0.95, centerX, centerY, radius * 1.15);
@@ -288,9 +274,8 @@ export default function ISSGlobe() {
       ctx.save();
       ctx.beginPath();
       ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-      ctx.clip(); // Clip to globe circle
+      ctx.clip();
 
-      // Ocean 3D spherical gradient shading
       const oceanGrad = ctx.createRadialGradient(
         centerX - radius * 0.3,
         centerY - radius * 0.3,
@@ -311,11 +296,10 @@ export default function ISSGlobe() {
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
         ctx.lineWidth = 0.75;
 
-        // Longitude meridians (every 30 deg, step 8 deg)
         for (let lng = -180; lng < 180; lng += 30) {
           ctx.beginPath();
           let first = true;
-          for (let lat = -90; lat <= 90; lat += 8) {
+          for (let lat = -90; lat <= 90; lat += 10) {
             const p = project(lat, lng);
             if (p.isVisible) {
               if (first) {
@@ -331,11 +315,10 @@ export default function ISSGlobe() {
           ctx.stroke();
         }
 
-        // Latitude parallels (every 30 deg, step 8 deg)
         for (let lat = -60; lat <= 60; lat += 30) {
           ctx.beginPath();
           let first = true;
-          for (let lng = -180; lng <= 180; lng += 8) {
+          for (let lng = -180; lng <= 180; lng += 10) {
             const p = project(lat, lng);
             if (p.isVisible) {
               if (first) {
@@ -349,7 +332,7 @@ export default function ISSGlobe() {
             }
           }
           if (lat === 0) {
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)'; // Equator highlight
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
             ctx.lineWidth = 1.2;
             ctx.stroke();
             ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
@@ -360,13 +343,13 @@ export default function ISSGlobe() {
         }
       }
 
-
       // Draw World Continents & Landmass Polygons
-      ctx.fillStyle = '#22c55e'; // Vibrant terrestrial green
-      ctx.strokeStyle = '#15803d';
+      ctx.fillStyle = '#86efac';
+      ctx.strokeStyle = '#16a34a';
       ctx.lineWidth = 0.5;
 
-      WORLD_CONTINENTS.forEach((polygon) => {
+      for (let c = 0; c < WORLD_CONTINENTS.length; c++) {
+        const polygon = WORLD_CONTINENTS[c];
         ctx.beginPath();
         let first = true;
         let anyVisible = false;
@@ -388,19 +371,16 @@ export default function ISSGlobe() {
         }
 
         if (anyVisible) {
-          ctx.fillStyle = '#86efac';
           ctx.fill();
-          ctx.strokeStyle = '#16a34a';
           ctx.stroke();
         }
-      });
+      }
 
       // Day / Night Terminator Shading (from solar coords)
       if (showDayNight && telemetry && telemetry.solar_lat !== undefined) {
         const sunLat = telemetry.solar_lat * (Math.PI / 180);
         const sunLng = telemetry.solar_lon * (Math.PI / 180);
 
-        // Sun 3D Vector
         const sx0 = Math.cos(sunLat) * Math.sin(sunLng);
         const sy0 = Math.sin(sunLat);
         const sz0 = Math.cos(sunLat) * Math.cos(sunLng);
@@ -416,7 +396,6 @@ export default function ISSGlobe() {
         const sx = sx1;
         const sy = sy1 * cosPitch - sz1 * sinPitch;
 
-        // Shadow gradient covering nighttime hemisphere
         const nightGrad = ctx.createRadialGradient(
           centerX - sx * radius * 0.8,
           centerY + sy * radius * 0.8,
@@ -439,7 +418,8 @@ export default function ISSGlobe() {
         ctx.lineWidth = 2.5;
         ctx.beginPath();
         let first = true;
-        trail.forEach((pt) => {
+        for (let t = 0; t < trail.length; t++) {
+          const pt = trail[t];
           const p = project(pt.lat, pt.lng);
           if (p.isVisible) {
             if (first) {
@@ -451,19 +431,19 @@ export default function ISSGlobe() {
           } else {
             first = true;
           }
-        });
+        }
         ctx.stroke();
       }
 
       // Draw ISS Ground Footprint Circle on Sphere
       if (showFootprint && telemetry) {
-        const footRadiusDeg = (telemetry.footprint / 111) * 0.5; // Approx degree radius
+        const footRadiusDeg = (telemetry.footprint / 111) * 0.5;
         ctx.fillStyle = 'rgba(14, 165, 233, 0.18)';
         ctx.strokeStyle = 'rgba(14, 165, 233, 0.65)';
         ctx.lineWidth = 1.5;
         ctx.beginPath();
         let first = true;
-        for (let angle = 0; angle <= 360; angle += 10) {
+        for (let angle = 0; angle <= 360; angle += 15) {
           const rad = angle * (Math.PI / 180);
           const fLat = telemetry.latitude + Math.sin(rad) * footRadiusDeg;
           const fLng = telemetry.longitude + (Math.cos(rad) * footRadiusDeg) / Math.cos(telemetry.latitude * (Math.PI / 180));
@@ -498,17 +478,15 @@ export default function ISSGlobe() {
         ctx.setLineDash([4, 4]);
         ctx.beginPath();
 
-        const orbitAltitudeRatio = 1.15; // Raised orbit altitude ring
+        const orbitAltitudeRatio = 1.15;
         const inclination = 51.64 * (Math.PI / 180);
 
-        for (let u = 0; u <= 360; u += 3) {
+        for (let u = 0; u <= 360; u += 5) {
           const uRad = u * (Math.PI / 180);
-          // Parametric orbit in plane
           const xOrb = Math.cos(uRad);
           const yOrb = Math.sin(uRad) * Math.sin(inclination);
           const zOrb = Math.sin(uRad) * Math.cos(inclination);
 
-          // Convert back to lat/lng
           const latDeg = Math.asin(yOrb) * (180 / Math.PI);
           const lngDeg = Math.atan2(xOrb, zOrb) * (180 / Math.PI) + telemetry.longitude;
 
@@ -527,7 +505,7 @@ export default function ISSGlobe() {
       // Draw ISS Satellite in 3D Space (Floating above Earth)
       if (telemetry) {
         const issGround = project(telemetry.latitude, telemetry.longitude, 1.0);
-        const issElevated = project(telemetry.latitude, telemetry.longitude, 1.15); // Floating in orbit
+        const issElevated = project(telemetry.latitude, telemetry.longitude, 1.15);
 
         if (issElevated.isVisible || issGround.isVisible) {
           const gx = issGround.screenX / dpr;
@@ -535,7 +513,7 @@ export default function ISSGlobe() {
           const ex = issElevated.screenX / dpr;
           const ey = issElevated.screenY / dpr;
 
-          // Vertical altitude stalk from ground to satellite
+          // Altitude stalk
           ctx.strokeStyle = '#38bdf8';
           ctx.lineWidth = 1.5;
           ctx.setLineDash([2, 2]);
@@ -551,63 +529,109 @@ export default function ISSGlobe() {
           ctx.arc(gx, gy, 3.5, 0, Math.PI * 2);
           ctx.fill();
 
-          // Pulsing Satellite Marker Beacon
+          // Marker Beacon
           const timeSec = performance.now() / 1000;
-          const pulse = (Math.sin(timeSec * 4) + 1) / 2; // 0 to 1
+          const pulse = (Math.sin(timeSec * 3) + 1) / 2;
 
           // Outer Radar Ring
           ctx.strokeStyle = `rgba(14, 165, 233, ${0.8 - pulse * 0.6})`;
-          ctx.lineWidth = 2;
+          ctx.lineWidth = 1.8;
           ctx.beginPath();
-          ctx.arc(ex, ey, 14 + pulse * 12, 0, Math.PI * 2);
+          ctx.arc(ex, ey, 12 + pulse * 10, 0, Math.PI * 2);
           ctx.stroke();
 
           // Satellite Core Badge
           ctx.fillStyle = '#0f172a';
           ctx.strokeStyle = '#38bdf8';
-          ctx.lineWidth = 2.5;
+          ctx.lineWidth = 2;
           ctx.beginPath();
-          ctx.arc(ex, ey, 10, 0, Math.PI * 2);
+          ctx.arc(ex, ey, 9, 0, Math.PI * 2);
           ctx.fill();
           ctx.stroke();
 
-          // Mini solar array graphic inside marker
+          // Mini solar panels
           ctx.fillStyle = '#38bdf8';
-          ctx.fillRect(ex - 7, ey - 2, 4, 4);
-          ctx.fillRect(ex + 3, ey - 2, 4, 4);
+          ctx.fillRect(ex - 6, ey - 2, 3.5, 3.5);
+          ctx.fillRect(ex + 2.5, ey - 2, 3.5, 3.5);
           ctx.fillStyle = '#ffffff';
           ctx.beginPath();
-          ctx.arc(ex, ey, 2, 0, Math.PI * 2);
+          ctx.arc(ex, ey, 1.5, 0, Math.PI * 2);
           ctx.fill();
 
           // Satellite Label Tag
           ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
           ctx.strokeStyle = '#38bdf8';
           ctx.lineWidth = 1;
-          const tagText = 'ISS (ZARYA-25544)';
-          ctx.font = 'bold 11px monospace';
+          const tagText = 'ISS (ZARYA)';
+          ctx.font = 'bold 10px monospace';
           const textWidth = ctx.measureText(tagText).width;
 
-          const tagX = ex + 14;
-          const tagY = ey - 10;
+          const tagX = ex + 12;
+          const tagY = ey - 9;
           ctx.beginPath();
-          ctx.roundRect(tagX, tagY, textWidth + 12, 22, 6);
+          ctx.roundRect(tagX, tagY, textWidth + 10, 18, 4);
           ctx.fill();
           ctx.stroke();
 
           ctx.fillStyle = '#38bdf8';
-          ctx.fillText(tagText, tagX + 6, tagY + 15);
+          ctx.fillText(tagText, tagX + 5, tagY + 12);
         }
       }
-
-      ctx.restore();
-      animationFrameRef.current = requestAnimationFrame(render);
     };
 
-    animationFrameRef.current = requestAnimationFrame(render);
+    const renderLoop = (now: number) => {
+      if (!isRunning || !isVisibleOnScreen) return;
+
+      // Throttle to ~35 FPS (28ms) to save CPU/battery and eliminate TBT
+      const elapsed = now - lastRenderTimeRef.current;
+      const isDynamic = autoRotateRef.current || isDraggingRef.current || isAutoCenteringRef.current;
+
+      if (isDynamic) {
+        if (elapsed >= 28) {
+          lastRenderTimeRef.current = now;
+
+          if (autoRotateRef.current && !isDraggingRef.current && !isAutoCenteringRef.current) {
+            rotationRef.current.yaw += 0.0015;
+          }
+
+          // Handle Resize / High DPI
+          const rect = canvas.getBoundingClientRect();
+          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          if (canvas.width !== Math.floor(rect.width * dpr) || canvas.height !== Math.floor(rect.height * dpr)) {
+            canvas.width = Math.floor(rect.width * dpr);
+            canvas.height = Math.floor(rect.height * dpr);
+          }
+
+          ctx.save();
+          ctx.scale(dpr, dpr);
+          drawGlobe(dpr);
+          ctx.restore();
+        }
+        animationFrameRef.current = requestAnimationFrame(renderLoop);
+      } else if (needsRenderRef.current) {
+        needsRenderRef.current = false;
+        lastRenderTimeRef.current = now;
+
+        const rect = canvas.getBoundingClientRect();
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        if (canvas.width !== Math.floor(rect.width * dpr) || canvas.height !== Math.floor(rect.height * dpr)) {
+          canvas.width = Math.floor(rect.width * dpr);
+          canvas.height = Math.floor(rect.height * dpr);
+        }
+
+        ctx.save();
+        ctx.scale(dpr, dpr);
+        drawGlobe(dpr);
+        ctx.restore();
+      }
+    };
+
+    needsRenderRef.current = true;
+    animationFrameRef.current = requestAnimationFrame(renderLoop);
 
     return () => {
       isRunning = false;
+      observer.disconnect();
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
@@ -628,7 +652,7 @@ export default function ISSGlobe() {
           <Radio className="h-3.5 w-3.5 text-cyan-600 animate-pulse" />
           <span>3D ORBITAL GLOBE</span>
           <span className="rounded bg-cyan-100 px-1.5 py-0.5 text-[10px] text-cyan-800 font-bold border border-cyan-300">
-            60 FPS
+            OPTIMIZED
           </span>
         </div>
 
@@ -666,6 +690,7 @@ export default function ISSGlobe() {
             const next = !autoRotate;
             setAutoRotate(next);
             autoRotateRef.current = next;
+            needsRenderRef.current = true;
           }}
           title={autoRotate ? 'Pause Globe Auto-Rotation' : 'Resume Globe Auto-Rotation'}
           className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white/90 px-3 py-1.5 font-mono text-xs font-bold text-slate-700 shadow-sm backdrop-blur-md hover:bg-slate-100 transition-all cursor-pointer"
@@ -696,7 +721,10 @@ export default function ISSGlobe() {
         {/* Layer & Feature Toggles Pill */}
         <div className="flex items-center gap-1 rounded-xl bg-white/90 p-1 border border-slate-200 shadow-sm backdrop-blur-md">
           <button
-            onClick={() => setShowOrbit(!showOrbit)}
+            onClick={() => {
+              setShowOrbit(!showOrbit);
+              needsRenderRef.current = true;
+            }}
             title="Toggle 51.6° Orbit Ring"
             className={`rounded-lg px-2.5 py-1 text-[11px] font-mono font-bold transition-all cursor-pointer ${
               showOrbit ? 'bg-cyan-100 text-cyan-800 border border-cyan-200' : 'text-slate-500 hover:text-slate-800'
@@ -705,7 +733,10 @@ export default function ISSGlobe() {
             Orbit
           </button>
           <button
-            onClick={() => setShowGraticule(!showGraticule)}
+            onClick={() => {
+              setShowGraticule(!showGraticule);
+              needsRenderRef.current = true;
+            }}
             title="Toggle Lat/Lng Grid"
             className={`rounded-lg px-2.5 py-1 text-[11px] font-mono font-bold transition-all cursor-pointer ${
               showGraticule ? 'bg-cyan-100 text-cyan-800 border border-cyan-200' : 'text-slate-500 hover:text-slate-800'
@@ -714,7 +745,10 @@ export default function ISSGlobe() {
             Grid
           </button>
           <button
-            onClick={() => setShowDayNight(!showDayNight)}
+            onClick={() => {
+              setShowDayNight(!showDayNight);
+              needsRenderRef.current = true;
+            }}
             title="Toggle Day/Night Shading"
             className={`rounded-lg px-2.5 py-1 text-[11px] font-mono font-bold transition-all cursor-pointer ${
               showDayNight ? 'bg-cyan-100 text-cyan-800 border border-cyan-200' : 'text-slate-500 hover:text-slate-800'
@@ -730,6 +764,7 @@ export default function ISSGlobe() {
         <button
           onClick={() => {
             zoomRef.current = Math.min(3.5, zoomRef.current * 1.2);
+            needsRenderRef.current = true;
           }}
           title="Zoom In"
           className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white/90 text-slate-700 shadow-md backdrop-blur-md hover:bg-slate-100 transition-all cursor-pointer"
@@ -739,6 +774,7 @@ export default function ISSGlobe() {
         <button
           onClick={() => {
             zoomRef.current = Math.max(0.6, zoomRef.current / 1.2);
+            needsRenderRef.current = true;
           }}
           title="Zoom Out"
           className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white/90 text-slate-700 shadow-md backdrop-blur-md hover:bg-slate-100 transition-all cursor-pointer"
