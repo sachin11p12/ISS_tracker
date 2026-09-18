@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { ISSTelemetry, ISSTrailPoint, GeocodedLocation, UnitSystem, MapLayerType, ThemeMode } from '@/types/iss';
+import { ISSTelemetry, ISSTrailPoint, GeocodedLocation, UnitSystem, MapLayerType, ThemeMode, ViewMode } from '@/types/iss';
 import { APP_CONFIG } from '@/constants/config';
 
 interface ISSStoreState {
