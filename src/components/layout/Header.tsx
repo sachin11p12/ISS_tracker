@@ -1,26 +1,16 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Orbit, Users, History, Play, Pause, Gauge, Radio } from 'lucide-react';
+import { Orbit, Users, History, Play, Pause, Gauge } from 'lucide-react';
 import { useISSStore } from '@/store/issStore';
-import { formatTimeOnlyUTC, cn } from '@/lib/utils';
+import { cn } from '@/lib/utils';
+import { UtcClock } from '@/components/layout/UtcClock';
 
 export function Header() {
   const pathname = usePathname();
-  const [utcTime, setUtcTime] = useState<string>('');
-  const [mounted, setMounted] = useState<boolean>(false);
   const { isLive, toggleLive, unitSystem, setUnitSystem } = useISSStore();
-
-
-  useEffect(() => {
-    setMounted(true);
-    const updateTime = () => setUtcTime(formatTimeOnlyUTC());
-    updateTime();
-    const timer = setInterval(updateTime, 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   const navLinks = [
     { href: '/', label: 'Live Tracker', icon: Orbit },
@@ -85,14 +75,9 @@ export function Header() {
 
         {/* Right: Live Controls & Telemetry Clock */}
         <div className="flex items-center gap-1.5 sm:gap-2">
-          {/* Live UTC Clock */}
-          <div className="hidden sm:flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-100/80 px-2.5 py-1.5 font-mono text-xs text-slate-700 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 shadow-2xs">
-            <Radio className="h-3 w-3 text-cyan-500 animate-pulse" />
-            <span className="text-[10px] font-bold text-slate-400">UTC</span>
-            <span className="font-bold text-cyan-700 dark:text-cyan-300 tracking-wider">
-              {mounted && utcTime ? utcTime : '00:00:00'}
-            </span>
-          </div>
+          {/* Isolated UtcClock */}
+          <UtcClock />
+
 
           {/* Unit Toggle */}
           <button
