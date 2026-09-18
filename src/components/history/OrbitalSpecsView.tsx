@@ -299,12 +299,12 @@ export function OrbitalSpecsView() {
                 </div>
               </div>
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                To maintain a stable circular orbit at ~420 km altitude without falling into Earth or escaping into deep space, the ISS travels at <strong>{speed}</strong>. The centrifugal force from this velocity precisely counters Earth&apos;s gravity ($g \approx 8.7 \text{ m/s}^2$ at altitude).
+                To maintain a stable circular orbit at ~420 km altitude without falling into Earth or escaping into deep space, the ISS travels at <strong>{speed}</strong>. The centrifugal force from this velocity precisely counters Earth&apos;s gravity (g ≈ 8.7 m/s² at altitude).
               </p>
               <div className="rounded-2xl bg-slate-50 p-3.5 border border-slate-200 text-xs font-mono space-y-1.5 text-slate-700">
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Vis-Viva Velocity ($v$):</span>
-                  <span className="font-bold text-blue-700">$\sqrt{'{'}\mu / r{'}'} \approx 7,660\text{ m/s}$</span>
+                  <span className="text-slate-500">Vis-Viva Velocity (v):</span>
+                  <span className="font-bold text-blue-700">√(μ / r) ≈ 7,660 m/s</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">Earth Orbits / 24h:</span>
@@ -329,7 +329,7 @@ export function OrbitalSpecsView() {
                 </div>
               </div>
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                Even at 420 km, trace neutral atoms in the thermosphere generate drag ($F_D = \frac{1}{2}\rho v^2 C_D A$), decaying the orbit by ~1.5 to 2.5 km per month. Docked Progress and Cygnus cargo freighters conduct periodic Delta-V reboost burns.
+                Even at 420 km, trace neutral atoms in the thermosphere generate drag (F_drag = 0.5 · ρ · v² · C_D · A), decaying the orbit by ~1.5 to 2.5 km per month. Docked Progress and Cygnus cargo freighters conduct periodic Delta-V reboost burns.
               </p>
               <div className="rounded-2xl bg-slate-50 p-3.5 border border-slate-200 text-xs font-mono space-y-1.5 text-slate-700">
                 <div className="flex justify-between">
@@ -365,7 +365,7 @@ export function OrbitalSpecsView() {
                   T = 2π √( r³ / GM_earth ) = 2π √((R_earth + h)³ / μ)
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  Where $R_E = 6,371\text{ km}$, $h = 420\text{ km}$, giving orbital radius $r = 6,791\text{ km}$. With Earth gravitational parameter $\mu = 3.986004418 \times 10^{14}\text{ m}^3/\text{s}^2$, the computed period $T \approx 5,561\text{ seconds} = 92.68\text{ minutes}$.
+                  Where R_earth = 6,371 km, h = 420 km, giving orbital radius r = 6,791 km. With Earth gravitational parameter μ = 3.986004418 × 10¹⁴ m³/s², the computed period T ≈ 5,561 seconds = 92.68 minutes.
                 </p>
               </div>
 
@@ -409,13 +409,13 @@ export function OrbitalSpecsView() {
               <li className="flex items-start gap-2 rounded-xl bg-slate-50 p-2.5 border border-slate-200">
                 <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
                 <div>
-                  <strong>Oxygen Generation System (OGS):</strong> Electrolyzes recycled water ($2\text{H}_2\text{O} \rightarrow 2\text{H}_2 + \text{O}_2$) generating up to 9.2 kg of breathable oxygen per day.
+                  <strong>Oxygen Generation System (OGS):</strong> Electrolyzes recycled water (2H₂O → 2H₂ + O₂) generating up to 9.2 kg of breathable oxygen per day.
                 </div>
               </li>
               <li className="flex items-start gap-2 rounded-xl bg-slate-50 p-2.5 border border-slate-200">
                 <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
                 <div>
-                  <strong>Carbon Dioxide Removal (CDRA) &amp; Sabatier:</strong> Scrubbed CO₂ is combined with hydrogen ($CO_2 + 4H_2 \rightarrow CH_4 + 2H_2O$), producing water and venting methane.
+                  <strong>Carbon Dioxide Removal (CDRA) &amp; Sabatier:</strong> Scrubbed CO₂ is combined with hydrogen (CO₂ + 4H₂ → CH₄ + 2H₂O), producing water and venting methane.
                 </div>
               </li>
               <li className="flex items-start gap-2 rounded-xl bg-slate-50 p-2.5 border border-slate-200">
@@ -426,6 +426,7 @@ export function OrbitalSpecsView() {
               </li>
             </ul>
           </div>
+
 
           {/* Electrical Power System (EPS) */}
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
