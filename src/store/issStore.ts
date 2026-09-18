@@ -17,6 +17,7 @@ interface ISSStoreState {
 
   // User UI Preferences
   theme: ThemeMode;
+  viewMode: ViewMode;
   unitSystem: UnitSystem;
   mapLayer: MapLayerType;
   isAutoCenter: boolean;
@@ -29,6 +30,7 @@ interface ISSStoreState {
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
   toggleLive: () => void;
+  setViewMode: (mode: ViewMode) => void;
   setTheme: (theme: ThemeMode) => void;
   toggleTheme: () => void;
   setUnitSystem: (units: UnitSystem) => void;
@@ -51,12 +53,14 @@ export const useISSStore = create<ISSStoreState>((set) => ({
   trail: [],
 
   theme: 'light',
+  viewMode: 'map',
   unitSystem: 'metric',
   mapLayer: 'light',
   isAutoCenter: true,
   showFootprint: true,
   showOrbitTrail: true,
   pollingInterval: APP_CONFIG.POLLING_INTERVAL_MS,
+
 
   setTelemetryData: ({ telemetry, locationDetails, lastUpdated }) =>
     set((state) => {
@@ -85,6 +89,7 @@ export const useISSStore = create<ISSStoreState>((set) => ({
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error, isLoading: false }),
   toggleLive: () => set((state) => ({ isLive: !state.isLive })),
+  setViewMode: (viewMode) => set({ viewMode }),
   setTheme: (theme) =>
     set((state) => ({
       theme,

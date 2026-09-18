@@ -34,21 +34,11 @@ export default function Home() {
         <LiveStatus />
       </section>
 
-      {/* Main Interactive Map Section */}
-      <section className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-slate-900 font-mono flex items-center gap-2 dark:text-slate-100">
-            <Compass className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
-            Live Orbital Trajectory Map
-          </h2>
-          <div className="flex items-center gap-2 text-xs font-mono text-slate-600 dark:text-slate-400">
-            <span className="h-2 w-2 rounded-full bg-cyan-500 animate-ping" />
-            <span className="hidden sm:inline font-medium">Position updates continuously</span>
-          </div>
-        </div>
-
+      {/* Main Interactive Map & 3D Globe Section */}
+      <section>
         <ISSMapWrapper />
       </section>
+
 
       {/* Real-time Telemetry Cards */}
       <section className="space-y-3">
