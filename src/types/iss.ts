@@ -6,7 +6,6 @@ export type ViewMode = 'map' | 'globe';
 
 export type MapLayerType = 'light' | 'dark' | 'satellite' | 'streets' | 'night';
 
-
 export interface ISSTelemetry {
   name: string;
   id: number;
@@ -46,6 +45,28 @@ export interface ISSStatePayload {
   lastUpdated: string;
 }
 
+export interface EducationEntry {
+  degree: string;
+  field: string;
+  institution: string;
+  year?: string;
+}
+
+export interface ResearchPaper {
+  title: string;
+  journal?: string;
+  year?: string;
+  url: string;
+  description?: string;
+  doi?: string;
+}
+
+export interface SpacewalkStats {
+  count: number;
+  durationHours?: number;
+  highlights?: string;
+}
+
 export interface Astronaut {
   id: string;
   name: string;
@@ -59,6 +80,14 @@ export interface Astronaut {
   daysInSpace?: number;
   launched?: number;
   launchDate?: string;
+  birthDate?: string;
+  birthPlace?: string;
+  education?: EducationEntry[];
+  qualifications?: string[];
+  achievements?: string[];
+  previousMissions?: string[];
+  spacewalks?: SpacewalkStats;
+  researchPapers?: ResearchPaper[];
   bio?: string;
   image?: string;
   url?: string;

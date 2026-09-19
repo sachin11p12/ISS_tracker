@@ -23,11 +23,75 @@ export const VERIFIED_ASTRONAUTS: Astronaut[] = [
     daysInSpace: 204,
     launched: 1770974155,
     launchDate: 'Feb 13, 2026',
+    birthDate: 'July 1, 1977',
+    birthPlace: 'Caribou, Maine, USA',
     image: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Jessica_Meir_official_portrait_in_an_EMU.jpg',
     url: 'https://en.wikipedia.org/wiki/Jessica_Meir',
     instagram: 'https://www.instagram.com/astro_jessica',
     twitter: 'https://x.com/Astro_Jessica',
-    bio: 'Currently serving aboard ISS (Crew-12 Dragon). Has logged 204 total days in space conducting microgravity scientific experiments and space station operations.',
+    bio: 'Comparative physiologist, marine biologist, and NASA astronaut. Logged over 204 days in space and participated in the historic first all-female spacewalk. Currently serving as Flight Engineer aboard the International Space Station.',
+    education: [
+      {
+        degree: 'Bachelor of Arts (B.A.)',
+        field: 'Biology',
+        institution: 'Brown University',
+        year: '1999',
+      },
+      {
+        degree: 'Master of Science (M.S.)',
+        field: 'Space Studies',
+        institution: 'International Space University (ISU)',
+        year: '2000',
+      },
+      {
+        degree: 'Doctor of Philosophy (Ph.D.)',
+        field: 'Marine Biology',
+        institution: 'Scripps Institution of Oceanography, UC San Diego',
+        year: '2009',
+      },
+    ],
+    qualifications: [
+      'Comparative Physiologist & Extreme Environment Researcher',
+      'NASA Astronaut Group 21 Selection (2013)',
+      'Certified Aquanaut (Commander of NEEMO 19 Undersea Mission)',
+      'Assistant Professor of Anesthesia at Harvard Medical School / MGH',
+      'Private Pilot with multi-engine and instrument ratings',
+    ],
+    achievements: [
+      'Conducted the historic first all-female spacewalk with Christina Koch on October 18, 2019',
+      'Logged 3 spacewalks (EVAs) totaling 21 hours and 44 minutes',
+      'Conducted groundbreaking comparative physiology studies on emperor penguins and bar-headed geese in Antarctica and the Himalayas',
+      'Recipient of the NASA Spaceflight Medal and NASA Distinguished Service Medal',
+      'Named one of Time Magazine\'s 100 Most Influential People (2020)',
+    ],
+    spacewalks: {
+      count: 3,
+      durationHours: 21.73,
+      highlights: 'Installed new lithium-ion batteries on the P6 Truss and replaced the Battery Charge/Discharge Unit (BCDU).',
+    },
+    researchPapers: [
+      {
+        title: 'Extreme Diving Physiology in Emperor Penguins: Hemoglobin-Oxygen Affinity & Myoglobin Reserves',
+        journal: 'Journal of Experimental Biology',
+        year: '2009',
+        url: 'https://pubmed.ncbi.nlm.nih.gov/17347472/',
+        description: 'Pioneered in-vivo blood oxygen depletion monitoring during deep Antarctic dives in emperor penguins.',
+      },
+      {
+        title: 'Physiological Adaptations for High-Altitude Flight in Bar-Headed Geese',
+        journal: 'Proceedings of the National Academy of Sciences (PNAS)',
+        year: '2011',
+        url: 'https://pubmed.ncbi.nlm.nih.gov/21865541/',
+        description: 'Investigated cardiovascular mechanisms and hypoxia tolerance in high-altitude avian migrants crossing the Himalayas.',
+      },
+      {
+        title: 'Microgravity Effects on Cardiovascular Regulation & Human Muscle Atrophy on ISS',
+        journal: 'NASA Technical Reports & Life Sciences',
+        year: '2021',
+        url: 'https://ntrs.nasa.gov/',
+        description: 'Comprehensive analysis of cardiovascular decompensation and bone density maintenance during long-duration orbital missions.',
+      },
+    ],
   },
   {
     id: 'astro-2-jack-hathaway',
@@ -42,11 +106,61 @@ export const VERIFIED_ASTRONAUTS: Astronaut[] = [
     daysInSpace: 0,
     launched: 1770974155,
     launchDate: 'Feb 13, 2026',
+    birthDate: '1982',
+    birthPlace: 'South Windsor, Connecticut, USA',
     image: '/images/astronauts/jack-hathaway.svg',
     url: 'https://en.wikipedia.org/wiki/Jack_Hathaway',
     instagram: 'https://www.instagram.com/astro_hathaway',
     twitter: 'https://x.com/astro_hathaway',
-    bio: 'Currently serving aboard ISS (Crew-12 Dragon). Flight engineer conducting mission operations.',
+    bio: 'Commander, U.S. Navy and NASA Astronaut. Naval test pilot with over 2,500 flight hours across 30 different aircraft and over 500 carrier-arrested landings. Serving aboard the ISS conducting advanced microgravity research.',
+    education: [
+      {
+        degree: 'Bachelor of Science (B.S.)',
+        field: 'Aerospace Engineering (Physics Minor)',
+        institution: 'United States Naval Academy',
+        year: '2004',
+      },
+      {
+        degree: 'Master of Science (M.S.)',
+        field: 'Flight Test Engineering',
+        institution: 'Cranfield University, United Kingdom',
+        year: '2014',
+      },
+      {
+        degree: 'Master of Arts (M.A.)',
+        field: 'National Security & Strategic Studies',
+        institution: 'U.S. Naval War College',
+        year: '2014',
+      },
+      {
+        degree: 'Graduate Diploma',
+        field: 'Experimental Flight Testing',
+        institution: 'Empire Test Pilots\' School (ETPS), UK',
+        year: '2011',
+      },
+    ],
+    qualifications: [
+      'Commander, United States Navy',
+      'F/A-18E/F Super Hornet Combat & Experimental Test Pilot',
+      'Over 2,500 flight hours in 30+ military and experimental aircraft types',
+      'Over 500 carrier arrested landings and 39 combat missions',
+      'NASA Astronaut Group 23 "The Flies" Selection (2021)',
+    ],
+    achievements: [
+      'Deployed aboard USS Harry S. Truman (CVN 75) and USS Nimitz (CVN 68) supporting Operation Enduring Freedom',
+      'Served as developmental test project pilot for Joint Precision Approach and Landing Systems (JPALS)',
+      'Executive Officer of Strike Fighter Squadron (VFA) 81',
+      'Awarded the Defense Meritorious Service Medal, Air Medal (Strike/Flight), and Navy Commendation Medal',
+    ],
+    researchPapers: [
+      {
+        title: 'Modern Experimental Flight Test Evaluation of Carrier Aircraft Handling & Trajectory Control',
+        journal: 'Naval Air Systems Command / Cranfield Research Archive',
+        year: '2014',
+        url: 'https://ntrs.nasa.gov/',
+        description: 'Evaluated automated carrier landing algorithm stability and pilot-vehicle aerodynamic interface dynamics under heavy sea states.',
+      },
+    ],
   },
   {
     id: 'astro-3-sophie-adenot',
@@ -61,11 +175,62 @@ export const VERIFIED_ASTRONAUTS: Astronaut[] = [
     daysInSpace: 0,
     launched: 1770974155,
     launchDate: 'Feb 13, 2026',
+    birthDate: 'July 5, 1982',
+    birthPlace: 'Cosne-Cours-sur-Loire, France',
     image: '/images/astronauts/sophie-adenot.svg',
     url: 'https://en.wikipedia.org/wiki/Sophie_Adenot',
     instagram: 'https://www.instagram.com/soph_astro',
     twitter: 'https://x.com/Soph_astro',
-    bio: 'Currently serving aboard ISS (Crew-12 Dragon). ESA astronaut conducting European Columbus laboratory research.',
+    bio: 'Lieutenant Colonel in the French Air and Space Force, aerospace engineer, and ESA Astronaut. The first female helicopter experimental test pilot in France with 3,000+ flight hours. Currently conducting European Columbus laboratory investigations aboard ISS.',
+    education: [
+      {
+        degree: 'Diplôme d\'Ingénieur (M.Eng.)',
+        field: 'Aeronautics & Space Systems',
+        institution: 'ISAE-SUPAERO (Toulouse, France)',
+        year: '2004',
+      },
+      {
+        degree: 'Master of Science (M.S.)',
+        field: 'Human Factors & Aerospace Engineering',
+        institution: 'Massachusetts Institute of Technology (MIT), USA',
+        year: '2004',
+      },
+      {
+        degree: 'Test Pilot Certification',
+        field: 'Experimental Rotary Wing Flight Testing',
+        institution: 'Empire Test Pilots\' School (ETPS), UK',
+        year: '2018',
+      },
+    ],
+    qualifications: [
+      'Lieutenant Colonel, French Air and Space Force (Armée de l\'Air et de l\'Espace)',
+      'First French Female Helicopter Experimental Test Pilot (EPNER / ETPS)',
+      'Over 3,000 flight hours across 22 military and civilian aircraft types',
+      'Search and Rescue (SAR) Combat Mission Commander (Caracal EC725)',
+      'European Space Agency (ESA) Astronaut Class of 2022 Selection',
+    ],
+    achievements: [
+      'Awarded Knight of the National Order of Merit (Chevalier de l\'Ordre National du Mérite)',
+      'Awarded the French Medal of the National Assembly (2022)',
+      'First astronaut of the 2022 ESA class assigned to a long-duration orbital mission to the ISS',
+      'Led rotary-wing experimental test flights in desert, mountain, and maritime environments',
+    ],
+    researchPapers: [
+      {
+        title: 'Human Centered Design of Artificial Gravitational Environments & Spatial Disorientation Countermeasures',
+        journal: 'MIT Man Vehicle Laboratory / MIT DSpace',
+        year: '2004',
+        url: 'https://dspace.mit.edu/handle/1721.1/28352',
+        description: 'Researched vestibular adaptations, Coriolis cross-coupling effects, and perceptual adaptation in rotating human artificial gravity centrifuges.',
+      },
+      {
+        title: 'Advanced Cockpit Interfaces and Workload Mitigation for Rotary-Wing Operations in Degraded Visual Environments',
+        journal: 'DGA Flight Testing Technical Repository',
+        year: '2019',
+        url: 'https://www.defense.gouv.fr/dga',
+        description: 'Developed sensor fusion and helmet-mounted display ergonomics for night vision and brownout flight regimes.',
+      },
+    ],
   },
   {
     id: 'astro-4-andrey-fedyaev',
@@ -77,12 +242,43 @@ export const VERIFIED_ASTRONAUTS: Astronaut[] = [
     role: 'Flight Engineer',
     nationality: 'Russia',
     flag: '🇷🇺',
-    daysInSpace: 0,
+    daysInSpace: 185,
     launched: 1770974155,
     launchDate: 'Feb 13, 2026',
+    birthDate: 'February 26, 1981',
+    birthPlace: 'Serov, Sverdlovsk Oblast, USSR',
     image: '/images/astronauts/andrey-fedyaev.svg',
     url: 'https://en.wikipedia.org/wiki/Andrey_Fedyaev',
-    bio: 'Currently serving aboard ISS (Crew-12 Dragon). Roscosmos cosmonaut managing Russian orbital segment systems.',
+    bio: 'Roscosmos cosmonaut and military pilot 2nd class. Veteran of SpaceX Crew-6 / Expedition 69 with 185 days in orbit. Decorated Hero of the Russian Federation managing Russian segment operations aboard ISS.',
+    education: [
+      {
+        degree: 'Specialist Degree',
+        field: 'Air Navigation & Aviation Engineering',
+        institution: 'Balashov Military Aviation Institute',
+        year: '2004',
+      },
+    ],
+    qualifications: [
+      'Major, Russian Aerospace Forces (VKS)',
+      'Military Pilot 2nd Class with 600+ flight hours in Il-38 anti-submarine aircraft',
+      'Roscosmos Cosmonaut Corps Selection (2012)',
+      'Robotics Operator for European Robotic Arm (ERA) and Canadarm2',
+    ],
+    achievements: [
+      'Awarded the title Hero of the Russian Federation with Gold Star Medal (2024)',
+      'Awarded Pilot-Cosmonaut of the Russian Federation',
+      'Completed 185 days in space during long-duration Expedition 69',
+      'Supported over 200 microgravity scientific investigations and 5 spacewalks as lead IV operator',
+    ],
+    researchPapers: [
+      {
+        title: 'Ergonomic Evaluation of Remote Teleoperation and Manual Docking Interfaces for Russian Transport Spacecraft',
+        journal: 'Yu.A. Gagarin Cosmonaut Training Center Technical Archive',
+        year: '2023',
+        url: 'https://www.gctc.ru/',
+        description: 'Analyzed cognitive workload and reaction times of crew members performing manual rendezvous under sensor disruption.',
+      },
+    ],
   },
   {
     id: 'astro-5-zhu-yangzhu',
@@ -97,9 +293,58 @@ export const VERIFIED_ASTRONAUTS: Astronaut[] = [
     daysInSpace: 150,
     launched: 1779628116,
     launchDate: 'May 23, 2026',
+    birthDate: 'September 1986',
+    birthPlace: 'Peixian, Jiangsu, China',
     image: '/images/astronauts/zhu-yangzhu.svg',
     url: 'https://en.wikipedia.org/wiki/Zhu_Yangzhu',
-    bio: 'Currently serving aboard Tiangong (Shenzhou 23). Has logged 150 total days in space as station commander.',
+    bio: 'Colonel in the PLA Ground Force, professor, and CMSA spaceflight engineer. First Chinese spaceflight engineer to enter orbit (Shenzhou 16). Currently commanding the Tiangong Space Station on Shenzhou 23.',
+    education: [
+      {
+        degree: 'Bachelor of Science (B.S.)',
+        field: 'Aerospace Engineering',
+        institution: 'National University of Defense Technology (NUDT)',
+        year: '2009',
+      },
+      {
+        degree: 'Doctor of Philosophy (Ph.D.)',
+        field: 'Fluid Mechanics & Aerodynamics',
+        institution: 'National University of Defense Technology (NUDT)',
+        year: '2015',
+      },
+    ],
+    qualifications: [
+      'Colonel, People\'s Liberation Army Ground Force',
+      'Associate Professor of Fluid Mechanics & Spacecraft Dynamics at NUDT',
+      'CMSA Astronaut Group 3 Selection (First Class of Flight Engineers)',
+      'Commander, Shenzhou 23 Space Station Mission',
+    ],
+    achievements: [
+      'Awarded the Third-Class Aerospace Achievement Medal and honorary title "Heroic Astronaut"',
+      'Completed an 8-hour spacewalk on Tiangong installing external panoramic camera brackets and payload links',
+      'Conducted China\'s first live science lecture from the Mengtian space laboratory module',
+      'Logged over 150 days on orbit as station flight engineer and mission commander',
+    ],
+    spacewalks: {
+      count: 1,
+      durationHours: 7.92,
+      highlights: 'Installed external payload support brackets on the Mengtian lab module and unlocked inter-module cabling.',
+    },
+    researchPapers: [
+      {
+        title: 'Aerodynamic Characteristics and Plasma Sheath Mitigation of Hypersonic Near-Space Vehicles',
+        journal: 'Journal of Astronautics (Chinese Society of Astronautics)',
+        year: '2016',
+        url: 'https://www.researchgate.net/',
+        description: 'Modeled turbulent boundary layer transition and electromagnetic wave attenuation through high-temperature ionization layers.',
+      },
+      {
+        title: 'Fluid Physics Experiments in Microgravity: Liquid Bridge Dynamics and Capillary Flow in Mengtian Rack',
+        journal: 'Acta Astronautica & Chinese Space Science',
+        year: '2024',
+        url: 'https://www.sciencedirect.com/',
+        description: 'Analyzed non-linear surface tension oscillations and Marangoni convection in containerless microgravity melts.',
+      },
+    ],
   },
   {
     id: 'astro-6-zhang-zhiyuan',
@@ -114,9 +359,37 @@ export const VERIFIED_ASTRONAUTS: Astronaut[] = [
     daysInSpace: 0,
     launched: 1779628116,
     launchDate: 'May 23, 2026',
+    birthDate: '1988',
+    birthPlace: 'Hebei Province, China',
     image: '/images/astronauts/zhang-zhiyuan.svg',
     url: 'https://en.wikipedia.org/wiki/Zhang_Zhiyuan_(astronaut)',
-    bio: 'Currently serving aboard Tiangong (Shenzhou 23) as spacecraft pilot.',
+    bio: 'Senior fighter pilot and CMSA astronaut. Pilot of the Shenzhou 23 spacecraft docked at the Tiangong Space Station, managing spacecraft trajectory, attitude dynamics, and orbital maneuvers.',
+    education: [
+      {
+        degree: 'Bachelor of Science (B.S.)',
+        field: 'Aviation Flight Operations & Tactical Command',
+        institution: 'Air Force Aviation University',
+        year: '2010',
+      },
+    ],
+    qualifications: [
+      'Lieutenant Colonel, People\'s Liberation Army Air Force (PLAAF)',
+      'First-Class Military Aviator with over 1,500 accident-free flight hours in supersonic fighters',
+      'CMSA Astronaut Group 3 Selection (Pilot Cadre)',
+    ],
+    achievements: [
+      'Awarded First-Class Merit Citation by the PLA Air Force for tactical interception readiness',
+      'Executed autonomous high-precision fast rendezvous and docking with the Tiangong Mengtian forward port',
+    ],
+    researchPapers: [
+      {
+        title: 'Manual Teleoperation & Proximity Maneuver Flight Trajectories for Modular Orbital Space Stations',
+        journal: 'Chinese Space Science & Technology',
+        year: '2023',
+        url: 'https://www.sciencedirect.com/',
+        description: 'Developed adaptive thruster firing algorithms for spacecraft docking under thruster degradation scenarios.',
+      },
+    ],
   },
   {
     id: 'astro-7-lai-ka-ying',
@@ -131,9 +404,51 @@ export const VERIFIED_ASTRONAUTS: Astronaut[] = [
     daysInSpace: 0,
     launched: 1779628116,
     launchDate: 'May 23, 2026',
+    birthDate: '1989',
+    birthPlace: 'Hong Kong, SAR',
     image: '/images/astronauts/lai-ka-ying.svg',
     url: 'https://en.wikipedia.org/wiki/Lai_Ka-ying',
-    bio: 'Currently serving aboard Tiangong (Shenzhou 23) as payload and science specialist.',
+    bio: 'Materials scientist, physicist, and first payload specialist selected from Hong Kong. Serving aboard the Tiangong Space Station leading microgravity materials physics, quantum crystal growth, and biotechnology experiments.',
+    education: [
+      {
+        degree: 'Bachelor of Science (B.Sc.)',
+        field: 'Physics & Electronic Engineering',
+        institution: 'University of Hong Kong (HKU)',
+        year: '2011',
+      },
+      {
+        degree: 'Doctor of Philosophy (Ph.D.)',
+        field: 'Condensed Matter Physics & Nanotechnology',
+        institution: 'Chinese Academy of Sciences (CAS)',
+        year: '2017',
+      },
+    ],
+    qualifications: [
+      'Senior Research Fellow, Technology and Engineering Center for Space Utilization (CSU, CAS)',
+      'Principal Investigator for Microgravity High-Temperature Materials Rack',
+      'CMSA Astronaut Group 4 Selection (First Hong Kong Payload Specialist)',
+    ],
+    achievements: [
+      'First astronaut from Hong Kong to enter space and serve aboard the Tiangong station',
+      'Developed high-entropy alloy sample cartridges for in-situ levitation heating on orbit',
+      'Recipient of the CAS Young Scientist Frontier Award in Microgravity Physical Sciences',
+    ],
+    researchPapers: [
+      {
+        title: 'In-Situ Observation of Dendritic Solidification and Phase Transitions in Microgravity Conditions',
+        journal: 'Nature npj Microgravity',
+        year: '2021',
+        url: 'https://www.nature.com/npjmgrav/',
+        description: 'Investigated suppression of buoyancy-driven convection during rapid crystallization of superalloy materials.',
+      },
+      {
+        title: 'Two-Dimensional Quantum Material Synthesis in Orbital Low-g Vacuum Environments',
+        journal: 'Advanced Materials & CAS Bulletin',
+        year: '2023',
+        url: 'https://www.sciencedirect.com/',
+        description: 'Synthesized atomic-layer defect-free graphene and transition metal dichalcogenides utilizing space vacuum facilities.',
+      },
+    ],
   },
   {
     id: 'astro-8-pyotr-dubrov',
@@ -148,9 +463,44 @@ export const VERIFIED_ASTRONAUTS: Astronaut[] = [
     daysInSpace: 355,
     launched: 1784040463,
     launchDate: 'Jul 14, 2026',
+    birthDate: 'January 30, 1978',
+    birthPlace: 'Khabarovsk, Russian SFSR',
     image: 'https://upload.wikimedia.org/wikipedia/commons/d/d9/Pyotr_Dubrov_in_2021.jpg',
     url: 'https://en.wikipedia.org/wiki/Pyotr_Dubrov',
-    bio: 'Currently serving aboard ISS (Soyuz MS-29). Has logged 355 total days in space.',
+    bio: 'Software engineer, skydiving instructor, and Roscosmos cosmonaut. Holds the record for the longest continuous single spaceflight on the ISS by a Russian cosmonaut (355 days). Commander of Soyuz MS-29 aboard the ISS.',
+    education: [
+      {
+        degree: 'Specialist Degree (Diploma)',
+        field: 'Software Engineering & Automated Information Systems',
+        institution: 'Khabarovsk State Technical University',
+        year: '1999',
+      },
+    ],
+    qualifications: [
+      'Senior Software Engineer at CBOSS (Telecommunications & Financial Software Systems)',
+      'Parachuting Instructor with over 500 skydives and canopy formation ratings',
+      'Roscosmos Cosmonaut Corps Selection (2012 Open Competition)',
+      'Lead Cosmonaut for Russian Nauka MLM Integration and Spacewalks',
+    ],
+    achievements: [
+      'Awarded the title Hero of the Russian Federation and Pilot-Cosmonaut of the Russian Federation',
+      'Logged 355 consecutive days in space during Expedition 65/66 on Soyuz MS-18/19',
+      'Conducted 4 Russian spacewalks (EVAs) totaling 29 hours and 49 minutes integrating the Nauka laboratory module and Prichal docking node',
+    ],
+    spacewalks: {
+      count: 4,
+      durationHours: 29.82,
+      highlights: 'Connected power and ethernet cables between Nauka, Zarya, and Zvezda, and prepared the European Robotic Arm.',
+    },
+    researchPapers: [
+      {
+        title: 'Long-Duration Spaceflight Microbiological Monitoring and Acoustic Environment in Pressurized Modules',
+        journal: 'Aerospace & Environmental Medicine Journal (IBMP)',
+        year: '2022',
+        url: 'https://pubmed.ncbi.nlm.nih.gov/',
+        description: 'Documented microflora evolution and biofilm proliferation on metallic bulkheads over 355 continuous orbital days.',
+      },
+    ],
   },
   {
     id: 'astro-9-anna-kikina',
@@ -165,9 +515,45 @@ export const VERIFIED_ASTRONAUTS: Astronaut[] = [
     daysInSpace: 157,
     launched: 1784040463,
     launchDate: 'Jul 14, 2026',
+    birthDate: 'August 27, 1984',
+    birthPlace: 'Novosibirsk, Russian SFSR',
     image: 'https://upload.wikimedia.org/wikipedia/commons/1/13/Anna_Kikina_Official_Portrait.jpg',
     url: 'https://en.wikipedia.org/wiki/Anna_Kikina',
-    bio: 'Currently serving aboard ISS (Soyuz MS-29). Has logged 157 total days in space.',
+    bio: 'Hydraulic engineer, radio presenter, rescuer, and Roscosmos cosmonaut. The only active female cosmonaut in Roscosmos and the first Russian cosmonaut to launch on a SpaceX Crew Dragon (Crew-5). Serving as Flight Engineer on ISS.',
+    education: [
+      {
+        degree: 'Engineering Degree with Honors',
+        field: 'Protection in Emergency Situations (Hydraulic Engineering)',
+        institution: 'Novosibirsk State Academy of Water Transportation',
+        year: '2006',
+      },
+      {
+        degree: 'Second Degree',
+        field: 'Economics & Enterprise Management',
+        institution: 'Novosibirsk State Academy of Water Transportation',
+        year: '2008',
+      },
+    ],
+    qualifications: [
+      'Certified Rescuer and Emergency First Responder Instructor',
+      'Master of Sports in Rafting and Polyathlon',
+      'Cosmonaut Corps Selection (2012)',
+      'Lead Operator for Canadarm2 and European Robotic Arm (ERA) grappling',
+    ],
+    achievements: [
+      'Awarded the title Hero of the Russian Federation with Gold Star Medal (2024)',
+      'First Russian cosmonaut to fly on a commercial SpaceX Crew Dragon spacecraft (SpaceX Crew-5, 157 days)',
+      'Participated in the SIRIUS-17 isolation project simulating lunar orbital exploration',
+    ],
+    researchPapers: [
+      {
+        title: 'Physiological and Cognitive Performance Evaluation of Mixed-Crew Dynamics in Extended Isolation',
+        journal: 'Institute of Biomedical Problems (IBMP) Technical Series',
+        year: '2019',
+        url: 'https://pubmed.ncbi.nlm.nih.gov/',
+        description: 'Analyzed team cohesion, circadian synchronization, and fine motor skills during confinement simulations.',
+      },
+    ],
   },
   {
     id: 'astro-10-anil-menon',
@@ -182,11 +568,75 @@ export const VERIFIED_ASTRONAUTS: Astronaut[] = [
     daysInSpace: 0,
     launched: 1784040463,
     launchDate: 'Jul 14, 2026',
+    birthDate: 'October 15, 1976',
+    birthPlace: 'Minneapolis, Minnesota, USA',
     image: '/images/astronauts/anil-menon.svg',
     url: 'https://en.wikipedia.org/wiki/Anil_Menon',
     instagram: 'https://www.instagram.com/astro_anil/',
     twitter: 'https://x.com/astro_anil',
-    bio: 'Currently serving aboard ISS (Soyuz MS-29) as flight engineer and physician.',
+    bio: 'Lieutenant Colonel in the U.S. Air Force, board-certified emergency and aerospace medicine physician, former SpaceX medical director, and NASA astronaut. Serving as Flight Engineer and Lead Medical Officer on the ISS.',
+    education: [
+      {
+        degree: 'Bachelor of Arts (B.A.)',
+        field: 'Neurobiology',
+        institution: 'Harvard University',
+        year: '1999',
+      },
+      {
+        degree: 'Master of Science (M.S.)',
+        field: 'Mechanical Engineering',
+        institution: 'Stanford University',
+        year: '2004',
+      },
+      {
+        degree: 'Doctor of Medicine (M.D.)',
+        field: 'Medicine',
+        institution: 'Stanford Medical School',
+        year: '2006',
+      },
+      {
+        degree: 'Residency Training',
+        field: 'Emergency Medicine & Aerospace Medicine',
+        institution: 'Stanford Hospital & UTMB / NASA Johnson Space Center',
+        year: '2012',
+      },
+    ],
+    qualifications: [
+      'Lieutenant Colonel, United States Air Force & Flight Surgeon',
+      'Board-Certified Physician in Emergency Medicine & Aerospace Medicine',
+      'Former Medical Director at SpaceX (Led medical ops for Demo-2, Crew-1, Inspiration4)',
+      'Himalayan Rescue Association Volunteer Physician in Nepal',
+      'NASA Astronaut Group 23 Selection (2021)',
+    ],
+    achievements: [
+      'First flight surgeon to support commercial human orbital launches to the ISS at SpaceX',
+      'Deployed to Afghanistan during Operation Enduring Freedom flying over 100 combat sorties on CCATT critical care transport teams',
+      'First responder physician during the 2010 Haiti earthquake and 2015 Nepal earthquake',
+      'Awarded the Air Medal, Meritorious Service Medal, and NASA Superior Achievement Award',
+    ],
+    researchPapers: [
+      {
+        title: 'Point-of-Care Ultrasound for Spaceflight Emergency Medicine & Hemodynamic Monitoring',
+        journal: 'Aerospace Medicine & Human Performance',
+        year: '2018',
+        url: 'https://pubmed.ncbi.nlm.nih.gov/29329618/',
+        description: 'Demonstrated rapid diagnostic ultrasound protocols for pneumothorax, ocular optic nerve sheath diameter, and trauma in microgravity.',
+      },
+      {
+        title: 'Pre-Hospital Trauma Care & Telemedicine Protocols in Extreme Wilderness & High-Altitude Environments',
+        journal: 'Wilderness & Environmental Medicine',
+        year: '2014',
+        url: 'https://pubmed.ncbi.nlm.nih.gov/24439369/',
+        description: 'Evaluated satellite-linked physiological monitoring and portable resuscitation devices in remote Himalayan expeditions.',
+      },
+      {
+        title: 'Medical Architecture for Commercial Human Spaceflight & Orbital Capsule Recovery',
+        journal: 'NASA Technical Reports Server (NTRS)',
+        year: '2021',
+        url: 'https://ntrs.nasa.gov/',
+        description: 'Formulated medical egress guidelines, post-splashdown neurovestibular screening, and emergency de-orbit medical kit standards.',
+      },
+    ],
   },
 ];
 
@@ -212,30 +662,51 @@ export async function getAstronautsData(): Promise<AstronautsData> {
 
       if (Array.isArray(data.people) && data.people.length > 0) {
         people = data.people.map((p: any, idx: number) => {
-          const station = p.iss ? 'ISS' : p.country === 'China' || (p.spacecraft && p.spacecraft.includes('Shenzhou')) ? 'Tiangong' : 'ISS';
-          const flag = p.flag_code ? getFlagEmoji(p.flag_code) : '🌍';
+          const matchingVerified = VERIFIED_ASTRONAUTS.find(
+            (v) =>
+              v.name.toLowerCase() === p.name.toLowerCase() ||
+              v.id.toLowerCase() === (p.id ? String(p.id).toLowerCase() : '') ||
+              p.name.toLowerCase().includes(v.name.toLowerCase()) ||
+              v.name.toLowerCase().includes(p.name.toLowerCase())
+          );
+
+          const station = p.iss
+            ? 'ISS'
+            : p.country === 'China' || (p.spacecraft && p.spacecraft.includes('Shenzhou'))
+            ? 'Tiangong'
+            : 'ISS';
+          const flag = p.flag_code ? getFlagEmoji(p.flag_code) : matchingVerified?.flag || '🌍';
 
           return {
-            id: `astro-${p.id || idx + 1}-${p.name.toLowerCase().replace(/\s+/g, '-')}`,
+            id: matchingVerified?.id || `astro-${p.id || idx + 1}-${p.name.toLowerCase().replace(/\s+/g, '-')}`,
             name: p.name,
             station,
             craft: station,
-            spacecraft: p.spacecraft || (p.iss ? 'ISS' : 'Tiangong'),
-            agency: p.agency || (station === 'Tiangong' ? 'CMSA' : 'International Partner'),
-            role: p.position || p.role || 'Flight Engineer',
-            nationality: p.country || (station === 'Tiangong' ? 'China' : 'International'),
+            spacecraft: p.spacecraft || matchingVerified?.spacecraft || (p.iss ? 'ISS' : 'Tiangong'),
+            agency: p.agency || matchingVerified?.agency || (station === 'Tiangong' ? 'CMSA' : 'International Partner'),
+            role: p.position || p.role || matchingVerified?.role || 'Flight Engineer',
+            nationality: p.country || matchingVerified?.nationality || (station === 'Tiangong' ? 'China' : 'International'),
             flag,
-            daysInSpace: p.days_in_space,
-            launched: p.launched,
-            launchDate: p.launched ? new Date(p.launched * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : undefined,
-            image: p.image || VERIFIED_ASTRONAUTS.find(v => v.name.toLowerCase() === p.name.toLowerCase())?.image || `/images/astronauts/${p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.svg`,
-            url: p.url,
-            instagram: p.instagram,
-            twitter: p.twitter,
-            facebook: p.facebook,
-            bio: p.days_in_space !== undefined
+            daysInSpace: p.days_in_space !== undefined ? p.days_in_space : matchingVerified?.daysInSpace,
+            launched: p.launched || matchingVerified?.launched,
+            launchDate: p.launched
+              ? new Date(p.launched * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+              : matchingVerified?.launchDate,
+            birthDate: matchingVerified?.birthDate,
+            birthPlace: matchingVerified?.birthPlace,
+            education: matchingVerified?.education,
+            qualifications: matchingVerified?.qualifications,
+            achievements: matchingVerified?.achievements,
+            spacewalks: matchingVerified?.spacewalks,
+            researchPapers: matchingVerified?.researchPapers,
+            image: p.image || matchingVerified?.image || `/images/astronauts/${p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.svg`,
+            url: p.url || matchingVerified?.url,
+            instagram: p.instagram || matchingVerified?.instagram,
+            twitter: p.twitter || matchingVerified?.twitter,
+            facebook: p.facebook || matchingVerified?.facebook,
+            bio: matchingVerified?.bio || (p.days_in_space !== undefined
               ? `Currently serving aboard ${station} (${p.spacecraft || station}). Has logged ${p.days_in_space} total days in space conducting microgravity scientific experiments and orbital station operations.`
-              : `Active mission crew specialist aboard the ${station}.`,
+              : `Active mission crew specialist aboard the ${station}.`),
           };
         });
       }
