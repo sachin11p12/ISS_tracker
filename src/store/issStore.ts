@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { ISSTelemetry, ISSTrailPoint, GeocodedLocation, UnitSystem, MapLayerType, ThemeMode, ViewMode } from '@/types/iss';
+import { ISSTelemetry, ISSTrailPoint, GeocodedLocation, UnitSystem, MapLayerType, ViewMode } from '@/types/iss';
 import { APP_CONFIG } from '@/constants/config';
 
 interface ISSStoreState {
@@ -16,7 +16,6 @@ interface ISSStoreState {
   trail: ISSTrailPoint[];
 
   // User UI Preferences
-  theme: ThemeMode;
   viewMode: ViewMode;
   unitSystem: UnitSystem;
   mapLayer: MapLayerType;
@@ -31,8 +30,6 @@ interface ISSStoreState {
   setError: (error: string | null) => void;
   toggleLive: () => void;
   setViewMode: (mode: ViewMode) => void;
-  setTheme: (theme: ThemeMode) => void;
-  toggleTheme: () => void;
   setUnitSystem: (units: UnitSystem) => void;
   setMapLayer: (layer: MapLayerType) => void;
   setIsAutoCenter: (center: boolean) => void;
@@ -52,7 +49,6 @@ export const useISSStore = create<ISSStoreState>((set) => ({
   refreshCount: 0,
   trail: [],
 
-  theme: 'light',
   viewMode: 'map',
   unitSystem: 'metric',
   mapLayer: 'light',
@@ -60,7 +56,6 @@ export const useISSStore = create<ISSStoreState>((set) => ({
   showFootprint: true,
   showOrbitTrail: true,
   pollingInterval: APP_CONFIG.POLLING_INTERVAL_MS,
-
 
   setTelemetryData: ({ telemetry, locationDetails, lastUpdated }) =>
     set((state) => {
@@ -72,7 +67,6 @@ export const useISSStore = create<ISSStoreState>((set) => ({
         velocity: telemetry.velocity,
       };
 
-      // Keep recent trail points within configured limit
       const updatedTrail = [...state.trail, newPoint].slice(-APP_CONFIG.MAX_TRAIL_POINTS);
 
       return {
@@ -90,19 +84,6 @@ export const useISSStore = create<ISSStoreState>((set) => ({
   setError: (error) => set({ error, isLoading: false }),
   toggleLive: () => set((state) => ({ isLive: !state.isLive })),
   setViewMode: (viewMode) => set({ viewMode }),
-  setTheme: (theme) =>
-    set((state) => ({
-      theme,
-      mapLayer: theme === 'light' && state.mapLayer === 'dark' ? 'light' : theme === 'dark' && state.mapLayer === 'light' ? 'dark' : state.mapLayer,
-    })),
-  toggleTheme: () =>
-    set((state) => {
-      const nextTheme = state.theme === 'light' ? 'dark' : 'light';
-      return {
-        theme: nextTheme,
-        mapLayer: nextTheme === 'light' && state.mapLayer === 'dark' ? 'light' : nextTheme === 'dark' && state.mapLayer === 'light' ? 'dark' : state.mapLayer,
-      };
-    }),
   setUnitSystem: (unitSystem) => set({ unitSystem }),
   setMapLayer: (mapLayer) => set({ mapLayer }),
   setIsAutoCenter: (isAutoCenter) => set({ isAutoCenter }),

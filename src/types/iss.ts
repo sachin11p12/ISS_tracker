@@ -1,10 +1,8 @@
 export type UnitSystem = 'metric' | 'imperial';
 
-export type ThemeMode = 'light' | 'dark';
-
 export type ViewMode = 'map' | 'globe';
 
-export type MapLayerType = 'light' | 'dark' | 'satellite' | 'streets' | 'night';
+export type MapLayerType = 'light' | 'streets' | 'satellite' | 'dark' | 'night';
 
 export interface ISSTelemetry {
   name: string;

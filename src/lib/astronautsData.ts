@@ -640,96 +640,32 @@ export const VERIFIED_ASTRONAUTS: Astronaut[] = [
   },
 ];
 
+let cachedAstronautsData: AstronautsData | null = null;
+let lastCacheTime = 0;
+const CACHE_LIFETIME = 15 * 60 * 1000; // 15 minutes
+
 export async function getAstronautsData(): Promise<AstronautsData> {
-  let people: Astronaut[] = [];
-  let issExpedition: number | undefined = 75;
-
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 4000);
-
-    const res = await fetch('https://corquaid.github.io/international-space-station-APIs/JSON/people-in-space.json', {
-      signal: controller.signal,
-      headers: { 'Accept': 'application/json' },
-      cache: 'no-store',
-    });
-
-    clearTimeout(timeoutId);
-
-    if (res.ok) {
-      const data = await res.json();
-      issExpedition = data.iss_expedition || 75;
-
-      if (Array.isArray(data.people) && data.people.length > 0) {
-        people = data.people.map((p: any, idx: number) => {
-          const matchingVerified = VERIFIED_ASTRONAUTS.find(
-            (v) =>
-              v.name.toLowerCase() === p.name.toLowerCase() ||
-              v.id.toLowerCase() === (p.id ? String(p.id).toLowerCase() : '') ||
-              p.name.toLowerCase().includes(v.name.toLowerCase()) ||
-              v.name.toLowerCase().includes(p.name.toLowerCase())
-          );
-
-          const station = p.iss
-            ? 'ISS'
-            : p.country === 'China' || (p.spacecraft && p.spacecraft.includes('Shenzhou'))
-            ? 'Tiangong'
-            : 'ISS';
-          const flag = p.flag_code ? getFlagEmoji(p.flag_code) : matchingVerified?.flag || '🌍';
-
-          return {
-            id: matchingVerified?.id || `astro-${p.id || idx + 1}-${p.name.toLowerCase().replace(/\s+/g, '-')}`,
-            name: p.name,
-            station,
-            craft: station,
-            spacecraft: p.spacecraft || matchingVerified?.spacecraft || (p.iss ? 'ISS' : 'Tiangong'),
-            agency: p.agency || matchingVerified?.agency || (station === 'Tiangong' ? 'CMSA' : 'International Partner'),
-            role: p.position || p.role || matchingVerified?.role || 'Flight Engineer',
-            nationality: p.country || matchingVerified?.nationality || (station === 'Tiangong' ? 'China' : 'International'),
-            flag,
-            daysInSpace: p.days_in_space !== undefined ? p.days_in_space : matchingVerified?.daysInSpace,
-            launched: p.launched || matchingVerified?.launched,
-            launchDate: p.launched
-              ? new Date(p.launched * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-              : matchingVerified?.launchDate,
-            birthDate: matchingVerified?.birthDate,
-            birthPlace: matchingVerified?.birthPlace,
-            education: matchingVerified?.education,
-            qualifications: matchingVerified?.qualifications,
-            achievements: matchingVerified?.achievements,
-            spacewalks: matchingVerified?.spacewalks,
-            researchPapers: matchingVerified?.researchPapers,
-            image: p.image || matchingVerified?.image || `/images/astronauts/${p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.svg`,
-            url: p.url || matchingVerified?.url,
-            instagram: p.instagram || matchingVerified?.instagram,
-            twitter: p.twitter || matchingVerified?.twitter,
-            facebook: p.facebook || matchingVerified?.facebook,
-            bio: matchingVerified?.bio || (p.days_in_space !== undefined
-              ? `Currently serving aboard ${station} (${p.spacecraft || station}). Has logged ${p.days_in_space} total days in space conducting microgravity scientific experiments and orbital station operations.`
-              : `Active mission crew specialist aboard the ${station}.`),
-          };
-        });
-      }
-    }
-  } catch (err) {
-    console.warn('Live people-in-space fetch notice:', err);
-  }
-
-  if (people.length === 0) {
-    people = VERIFIED_ASTRONAUTS;
+  const now = Date.now();
+  if (cachedAstronautsData && now - lastCacheTime < CACHE_LIFETIME) {
+    return cachedAstronautsData;
   }
 
   const craftBreakdown: Record<string, number> = {};
-  for (const p of people) {
+  for (const p of VERIFIED_ASTRONAUTS) {
     const key = p.station || p.craft;
     craftBreakdown[key] = (craftBreakdown[key] || 0) + 1;
   }
 
-  return {
-    count: people.length,
-    issExpedition,
+  const payload: AstronautsData = {
+    count: VERIFIED_ASTRONAUTS.length,
+    issExpedition: 75,
     craftBreakdown,
-    people,
+    people: VERIFIED_ASTRONAUTS,
     lastUpdated: new Date().toISOString(),
   };
+
+  cachedAstronautsData = payload;
+  lastCacheTime = now;
+
+  return payload;
 }
