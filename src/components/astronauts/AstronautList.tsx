@@ -46,12 +46,12 @@ export function AstronautList() {
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <Skeleton className="h-8 w-48" />
-          <Skeleton className="h-8 w-32" />
+          <Skeleton className="h-8 w-48 rounded-xl" />
+          <Skeleton className="h-8 w-32 rounded-xl" />
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[...Array(6)].map((_, i) => (
-            <Skeleton key={i} className="h-48 w-full" />
+            <Skeleton key={i} className="h-48 w-full rounded-2xl" />
           ))}
         </div>
       </div>
@@ -60,17 +60,17 @@ export function AstronautList() {
 
   if (error || !data) {
     return (
-      <div className="rounded-xl border border-rose-200 bg-rose-50 p-6 text-center text-rose-700 dark:border-rose-900/50 dark:bg-rose-950/20 dark:text-rose-300">
+      <div className="rounded-2xl border border-rose-200 bg-rose-50 p-6 text-center text-rose-700">
         <p className="text-sm font-semibold">{error || 'Could not retrieve space crew roster.'}</p>
       </div>
     );
   }
 
-  // Filter astronauts
   const filteredPeople = data.people.filter((person) => {
     const matchesCraft =
       selectedCraft === 'all' ||
-      person.craft.toLowerCase().includes(selectedCraft.toLowerCase());
+      person.craft.toLowerCase().includes(selectedCraft.toLowerCase()) ||
+      person.station.toLowerCase().includes(selectedCraft.toLowerCase());
 
     const matchesSearch =
       person.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -88,17 +88,17 @@ export function AstronautList() {
       {/* Header & Controls bar */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-100 text-cyan-700 border border-cyan-300 dark:bg-cyan-950/80 dark:text-cyan-400 dark:border-cyan-800/40">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-cyan-100 text-cyan-700 border border-cyan-300">
             <Users className="h-5 w-5" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 font-mono flex items-center gap-2">
+            <h2 className="text-xl font-bold text-slate-900 font-mono flex items-center gap-2">
               People in Space Right Now
               <Badge variant="cyan" size="md" className="font-mono">
                 {data.count} Human{data.count === 1 ? '' : 's'}
               </Badge>
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+            <p className="text-xs text-slate-500 font-mono">
               Active space station expeditions &amp; orbital crews
             </p>
           </div>
@@ -106,7 +106,6 @@ export function AstronautList() {
 
         {/* Search & Craft Filter */}
         <div className="flex flex-wrap items-center gap-2.5">
-          {/* Search input */}
           <div className="relative flex-1 sm:w-64">
             <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
             <input
@@ -114,25 +113,24 @@ export function AstronautList() {
               placeholder="Search astronaut, agency..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-white py-2 pl-9 pr-3 text-xs text-slate-800 placeholder-slate-400 focus:border-cyan-500 focus:outline-hidden font-mono shadow-xs dark:border-slate-800 dark:bg-slate-950/80 dark:text-slate-200 dark:placeholder-slate-500"
+              className="w-full rounded-xl border border-slate-200 bg-white py-2 pl-9 pr-3 text-xs text-slate-800 placeholder-slate-400 focus:border-cyan-500 focus:outline-hidden font-mono shadow-2xs"
             />
           </div>
 
-          {/* Craft filter buttons */}
-          <div className="flex items-center gap-1 rounded-xl border border-slate-200 bg-white p-1 shadow-xs dark:border-slate-800 dark:bg-slate-950/80">
+          <div className="flex items-center gap-1 rounded-xl border border-slate-200 bg-white p-1 shadow-2xs">
             {crafts.map((craft) => (
               <button
                 key={craft}
                 onClick={() => setSelectedCraft(craft)}
-                className={`rounded-lg px-2.5 py-1 text-xs font-mono font-semibold transition-colors ${
+                className={`rounded-lg px-2.5 py-1 text-xs font-mono font-semibold transition-colors cursor-pointer ${
                   selectedCraft === craft
-                    ? 'bg-cyan-100 text-cyan-800 border border-cyan-300 shadow-xs dark:bg-cyan-950 dark:text-cyan-300 dark:border-cyan-700/50'
-                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
+                    ? 'bg-cyan-100 text-cyan-800 border border-cyan-300 shadow-2xs'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 {craft.toUpperCase()}
                 {craft !== 'all' && (
-                  <span className="ml-1 text-[10px] text-cyan-700 dark:text-cyan-500">
+                  <span className="ml-1 text-[10px] text-cyan-700">
                     ({data.craftBreakdown[craft] || 0})
                   </span>
                 )}
@@ -150,7 +148,7 @@ export function AstronautList() {
           ))}
         </div>
       ) : (
-        <div className="rounded-xl border border-slate-200 bg-white/40 p-8 text-center text-slate-500 font-mono text-xs dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-400">
+        <div className="rounded-2xl border border-slate-200 bg-white/40 p-8 text-center text-slate-500 font-mono text-xs">
           No astronauts found matching &quot;{searchQuery}&quot;.
         </div>
       )}

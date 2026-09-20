@@ -14,16 +14,16 @@ export function AstronautCard({ astronaut }: AstronautCardProps) {
   const profileUrl = `/astronauts/${encodeURIComponent(astronaut.name)}`;
 
   return (
-    <div className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs transition-all duration-300 hover:border-cyan-400 hover:shadow-xl dark:border-slate-800 dark:bg-slate-950/90 dark:hover:border-cyan-500/50">
+    <div className="group flex flex-col justify-between overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xs transition-all duration-300 hover:border-cyan-400 hover:shadow-xl">
       {/* Top Large Astronaut Portrait Photo Banner (Clickable) */}
-      <Link href={profileUrl} className="relative h-64 w-full overflow-hidden bg-slate-100 dark:bg-slate-900 block cursor-pointer">
+      <Link href={profileUrl} className="relative h-64 w-full overflow-hidden bg-slate-100 block cursor-pointer">
         <AstronautImage
           src={astronaut.image}
           alt={astronaut.name}
           className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
         />
 
-        {/* Subtle Dark Gradient Overlay at bottom of image */}
+        {/* Dark Gradient Overlay at bottom of image */}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
 
         {/* Floating Badges on top of photo */}
@@ -48,7 +48,7 @@ export function AstronautCard({ astronaut }: AstronautCardProps) {
         {/* Astronaut Name & Role Overlaid on bottom of photo */}
         <div className="absolute bottom-3 left-3 right-3 text-white">
           <div className="flex items-center justify-between gap-2">
-            <h4 className="text-lg font-bold text-white tracking-tight drop-shadow-md group-hover:text-cyan-300 transition-colors">
+            <h4 className="text-lg font-bold text-white tracking-tight drop-shadow-md group-hover:text-cyan-300 transition-colors font-mono">
               {astronaut.name}
             </h4>
             <span className="flex items-center gap-1 text-xs text-cyan-300 font-semibold group-hover:translate-x-1 transition-transform">
@@ -68,26 +68,26 @@ export function AstronautCard({ astronaut }: AstronautCardProps) {
         <div>
           {/* Spacecraft assignment chip */}
           {astronaut.spacecraft && (
-            <div className="mb-2.5 inline-flex items-center gap-1.5 rounded-md bg-slate-100 px-2.5 py-1 text-[11px] font-mono font-semibold text-slate-700 border border-slate-200 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-800">
+            <div className="mb-2.5 inline-flex items-center gap-1.5 rounded-lg bg-slate-100 px-2.5 py-1 text-[11px] font-mono font-semibold text-slate-700 border border-slate-200">
               <span className="text-slate-400">Craft:</span>
-              <span className="text-cyan-700 dark:text-cyan-400">{astronaut.spacecraft}</span>
+              <span className="text-cyan-700 font-bold">{astronaut.spacecraft}</span>
             </div>
           )}
 
-          <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 line-clamp-3">
+          <p className="text-xs leading-relaxed text-slate-600 line-clamp-3">
             {astronaut.bio}
           </p>
         </div>
 
         {/* Agency and Profile Links Footer */}
-        <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-xs font-mono text-slate-500 dark:border-slate-800/80 dark:text-slate-400">
+        <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-xs font-mono text-slate-500">
           <div>
             <span className="text-slate-400">Agency: </span>
-            <span className="font-bold text-slate-800 dark:text-slate-200">{astronaut.agency || 'International'}</span>
+            <span className="font-bold text-slate-800">{astronaut.agency || 'International'}</span>
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1 font-semibold text-cyan-700 dark:text-cyan-400">
+            <div className="flex items-center gap-1 font-semibold text-cyan-700">
               <Clock className="h-3.5 w-3.5" />
               <span>{astronaut.daysInSpace && astronaut.daysInSpace > 0 ? `${astronaut.daysInSpace}d total` : '1st Flight'}</span>
             </div>
@@ -97,7 +97,7 @@ export function AstronautCard({ astronaut }: AstronautCardProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Wikipedia"
-                className="text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400"
+                className="text-slate-400 hover:text-cyan-600 transition-colors"
               >
                 <ExternalLink className="h-3.5 w-3.5" />
               </a>
