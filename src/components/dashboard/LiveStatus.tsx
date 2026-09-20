@@ -10,7 +10,7 @@ export function LiveStatus() {
   const { telemetry, locationDetails, isLoading, error, refresh, isLive } = useISSLocation();
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition-colors dark:border-slate-800/80 dark:bg-slate-950/60 dark:shadow-none">
+    <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-colors">
       <div className="flex flex-wrap items-center gap-3">
         {/* Connection status indicator */}
         {error ? (
@@ -29,10 +29,10 @@ export function LiveStatus() {
         )}
 
         {/* Current Ground Track Area */}
-        <div className="flex items-center gap-2 text-xs font-mono text-slate-700 dark:text-slate-300">
-          <Globe2 className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
-          <span className="text-slate-500 dark:text-slate-400">Overflying:</span>
-          <span className="font-bold text-cyan-700 dark:text-cyan-300">
+        <div className="flex items-center gap-2 text-xs font-mono text-slate-700">
+          <Globe2 className="h-4 w-4 text-cyan-600" />
+          <span className="text-slate-500">Overflying:</span>
+          <span className="font-bold text-cyan-700">
             {locationDetails?.country
               ? `${locationDetails.country} ${locationDetails.countryCode ? `(${locationDetails.countryCode})` : ''}`
               : locationDetails?.waterBodyName || 'Earth Orbit'}
@@ -43,10 +43,10 @@ export function LiveStatus() {
       {/* Timestamp & Manual Sync */}
       <div className="flex items-center gap-3">
         {telemetry && (
-          <div className="flex items-center gap-1.5 text-xs font-mono text-slate-500 dark:text-slate-400">
-            <Clock className="h-3.5 w-3.5 text-slate-400 dark:text-slate-500" />
+          <div className="flex items-center gap-1.5 text-xs font-mono text-slate-500">
+            <Clock className="h-3.5 w-3.5 text-slate-400" />
             <span className="hidden sm:inline">Packet:</span>
-            <span className="text-slate-800 dark:text-slate-200 font-semibold">
+            <span className="text-slate-800 font-semibold">
               {formatTimestampUTC(telemetry.timestamp)}
             </span>
           </div>
@@ -56,9 +56,9 @@ export function LiveStatus() {
           onClick={() => refresh()}
           disabled={isLoading}
           title="Manual Telemetry Sync"
-          className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-mono text-slate-700 hover:border-slate-300 hover:bg-slate-100 disabled:opacity-50 transition-colors shadow-xs dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-800"
+          className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-mono text-slate-700 hover:border-slate-300 hover:bg-slate-100 disabled:opacity-50 transition-colors shadow-2xs cursor-pointer"
         >
-          <RefreshCw className={`h-3 w-3 text-cyan-600 dark:text-cyan-400 ${isLoading ? 'animate-spin' : ''}`} />
+          <RefreshCw className={`h-3 w-3 text-cyan-600 ${isLoading ? 'animate-spin' : ''}`} />
           <span className="hidden sm:inline font-bold">Sync</span>
         </button>
       </div>
