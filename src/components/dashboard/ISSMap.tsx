@@ -186,20 +186,50 @@ export default function ISSMap() {
     tileLayerRef.current = newTileLayer;
   }, [mapLayer]);
 
-  // Update Marker, Footprint, Orbit Trail & Whole Multi-Orbit Groundtracks
+  // References for 60 FPS smooth interpolation
+  const currentCoordsRef = useRef<{ lat: number; lng: number } | null>(null);
+  const targetCoordsRef = useRef<{ lat: number; lng: number } | null>(null);
+  const velocityRef = useRef<{ dLat: number; dLng: number }>({ dLat: 0, dLng: 0 });
+  const lastUpdateTimeRef = useRef<number>(performance.now());
+  const isAutoCenterRef = useRef<boolean>(isAutoCenter);
+
+  useEffect(() => {
+    isAutoCenterRef.current = isAutoCenter;
+  }, [isAutoCenter]);
+
+  // Telemetry target update and static layer refreshes
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map || !telemetry) return;
 
-    const latLng: [number, number] = [telemetry.latitude, telemetry.longitude];
+    const newTarget = { lat: telemetry.latitude, lng: telemetry.longitude };
 
-    // Marker update or creation
+    if (!currentCoordsRef.current) {
+      currentCoordsRef.current = { ...newTarget };
+    }
+
+    if (targetCoordsRef.current) {
+      const now = performance.now();
+      const dt = Math.max(0.5, (now - lastUpdateTimeRef.current) / 1000);
+      const dLat = newTarget.lat - targetCoordsRef.current.lat;
+      let dLng = newTarget.lng - targetCoordsRef.current.lng;
+      if (dLng > 180) dLng -= 360;
+      if (dLng < -180) dLng += 360;
+
+      if (dt < 15) {
+        velocityRef.current = { dLat: dLat / dt, dLng: dLng / dt };
+      }
+      lastUpdateTimeRef.current = now;
+    }
+
+    targetCoordsRef.current = newTarget;
+
+    const latLng: [number, number] = [currentCoordsRef.current.lat, currentCoordsRef.current.lng];
+
+    // Marker creation
     if (!markerRef.current) {
       const marker = L.marker(latLng, { icon: createISSIcon() }).addTo(map);
       markerRef.current = marker;
-    } else {
-      markerRef.current.setIcon(createISSIcon());
-      markerRef.current.setLatLng(latLng);
     }
 
     // Popup content update
@@ -245,7 +275,6 @@ export default function ISSMap() {
           dashArray: '4, 4',
         }).addTo(map);
       } else {
-        footprintRef.current.setLatLng(latLng);
         footprintRef.current.setRadius(radiusMeters);
         footprintRef.current.setStyle({
           color: '#0284c7',
@@ -290,8 +319,6 @@ export default function ISSMap() {
           const segments = calculateOrbitSegments(telemetry.latitude, telemetry.longitude, offset);
 
           segments.forEach((seg) => {
-            // Current pass: vibrant glowing cyan dashed line
-            // Future/past passes: subtle translucent orbital curves
             const poly = L.polyline(seg, {
               color: isCurrent ? '#06b6d4' : '#64748b',
               weight: isCurrent ? 2.5 : 1.2,
@@ -306,19 +333,66 @@ export default function ISSMap() {
         });
       }
     }
+  }, [telemetry, trail, showFootprint, showOrbitTrail, showWholeRoute, unitSystem]);
 
-    // Auto-center pan
-    if (isAutoCenter) {
-      map.panTo(latLng, { animate: true, duration: 1.2 });
-    }
-  }, [telemetry, trail, showFootprint, showOrbitTrail, showWholeRoute, isAutoCenter, unitSystem]);
+  // 60 FPS Smooth Movement Animation Loop
+  useEffect(() => {
+    let animFrameId: number;
+    let lastFrameTime = performance.now();
+
+    const animateMovement = () => {
+      const now = performance.now();
+      const dt = Math.min(0.1, (now - lastFrameTime) / 1000);
+      lastFrameTime = now;
+
+      if (currentCoordsRef.current && targetCoordsRef.current) {
+        const cur = currentCoordsRef.current;
+        const tgt = targetCoordsRef.current;
+
+        // Smooth shortest angular distance interpolation
+        const dLat = tgt.lat - cur.lat;
+        let dLng = tgt.lng - cur.lng;
+        if (dLng > 180) dLng -= 360;
+        if (dLng < -180) dLng += 360;
+
+        // Easing interpolation factor
+        const lerpFactor = Math.min(1, dt * 3.5);
+        cur.lat += dLat * lerpFactor;
+        cur.lng += dLng * lerpFactor;
+
+        // Normalize longitude
+        cur.lng = (((cur.lng + 180) % 360) + 360) % 360 - 180;
+
+        const newPos: [number, number] = [cur.lat, cur.lng];
+
+        if (markerRef.current) {
+          markerRef.current.setLatLng(newPos);
+        }
+        if (footprintRef.current) {
+          footprintRef.current.setLatLng(newPos);
+        }
+
+        if (isAutoCenterRef.current && mapInstanceRef.current) {
+          mapInstanceRef.current.panTo(newPos, { animate: false });
+        }
+      }
+
+      animFrameId = requestAnimationFrame(animateMovement);
+    };
+
+    animFrameId = requestAnimationFrame(animateMovement);
+
+    return () => {
+      cancelAnimationFrame(animFrameId);
+    };
+  }, []);
 
   // Center manual button trigger
   const handleRecenter = () => {
-    if (mapInstanceRef.current && telemetry) {
-      mapInstanceRef.current.flyTo([telemetry.latitude, telemetry.longitude], 4, {
+    if (mapInstanceRef.current && currentCoordsRef.current) {
+      mapInstanceRef.current.flyTo([currentCoordsRef.current.lat, currentCoordsRef.current.lng], 4, {
         animate: true,
-        duration: 1.5,
+        duration: 1.2,
       });
     }
   };

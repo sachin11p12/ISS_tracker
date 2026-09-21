@@ -125,6 +125,10 @@ export default function ISSGlobe() {
   const [showClouds, setShowClouds] = useState<boolean>(true);
   const [textureQuality, setTextureQuality] = useState<'high' | 'procedural'>('high');
 
+  // Coordinate references for smooth 60fps interpolation
+  const currentGlobeCoordsRef = useRef<{ lat: number; lng: number } | null>(null);
+  const targetGlobeCoordsRef = useRef<{ lat: number; lng: number } | null>(null);
+
   const {
     telemetry,
     trail,
