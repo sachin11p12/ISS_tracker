@@ -22,6 +22,8 @@ interface ISSStoreState {
   isAutoCenter: boolean;
   showFootprint: boolean;
   showOrbitTrail: boolean;
+  showWholeRoute: boolean;
+  isMapExpanded: boolean;
   pollingInterval: number;
 
   // Actions
@@ -35,6 +37,8 @@ interface ISSStoreState {
   setIsAutoCenter: (center: boolean) => void;
   setShowFootprint: (show: boolean) => void;
   setShowOrbitTrail: (show: boolean) => void;
+  setShowWholeRoute: (show: boolean) => void;
+  toggleMapExpanded: () => void;
   setPollingInterval: (interval: number) => void;
   clearTrail: () => void;
 }
@@ -55,6 +59,8 @@ export const useISSStore = create<ISSStoreState>((set) => ({
   isAutoCenter: true,
   showFootprint: true,
   showOrbitTrail: true,
+  showWholeRoute: true,
+  isMapExpanded: false,
   pollingInterval: APP_CONFIG.POLLING_INTERVAL_MS,
 
   setTelemetryData: ({ telemetry, locationDetails, lastUpdated }) =>
@@ -89,6 +95,8 @@ export const useISSStore = create<ISSStoreState>((set) => ({
   setIsAutoCenter: (isAutoCenter) => set({ isAutoCenter }),
   setShowFootprint: (showFootprint) => set({ showFootprint }),
   setShowOrbitTrail: (showOrbitTrail) => set({ showOrbitTrail }),
+  setShowWholeRoute: (showWholeRoute) => set({ showWholeRoute }),
+  toggleMapExpanded: () => set((state) => ({ isMapExpanded: !state.isMapExpanded })),
   setPollingInterval: (pollingInterval) => set({ pollingInterval }),
   clearTrail: () => set({ trail: [] }),
 }));

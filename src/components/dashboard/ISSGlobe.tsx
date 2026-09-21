@@ -131,6 +131,8 @@ export default function ISSGlobe() {
     locationDetails,
     unitSystem,
     showFootprint,
+    isMapExpanded,
+    toggleMapExpanded,
   } = useISSStore();
 
   // Smoothly center camera on ISS position
@@ -711,8 +713,29 @@ export default function ISSGlobe() {
     }
   }, [showOrbitRings, showClouds, showFootprint]);
 
+  // Resize WebGL viewport on expand/compress toggle
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (containerRef.current && rendererRef.current && cameraRef.current) {
+        const newWidth = containerRef.current.clientWidth;
+        const newHeight = containerRef.current.clientHeight;
+        cameraRef.current.aspect = newWidth / newHeight;
+        cameraRef.current.updateProjectionMatrix();
+        rendererRef.current.setSize(newWidth, newHeight);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [isMapExpanded]);
+
   return (
-    <div className="relative h-[520px] w-full overflow-hidden rounded-3xl border border-slate-900 bg-slate-950 shadow-2xl md:h-[620px] lg:h-[680px]">
+    <div
+      className={`relative w-full overflow-hidden rounded-3xl border border-slate-900 bg-slate-950 shadow-2xl transition-all duration-500 ease-in-out ${
+        isMapExpanded
+          ? 'h-[580px] sm:h-[640px] lg:h-[720px]'
+          : 'h-[380px] sm:h-[420px] md:h-[460px]'
+      }`}
+    >
       <div
         ref={containerRef}
         className="h-full w-full cursor-grab active:cursor-grabbing select-none"
