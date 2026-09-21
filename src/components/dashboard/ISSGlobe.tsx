@@ -635,6 +635,42 @@ export default function ISSGlobe() {
         }
       }
 
+      // 60 FPS Smooth Position Interpolation for ISS on 3D Globe
+      if (currentGlobeCoordsRef.current && targetGlobeCoordsRef.current) {
+        const cur = currentGlobeCoordsRef.current;
+        const tgt = targetGlobeCoordsRef.current;
+
+        const dLat = tgt.lat - cur.lat;
+        let dLng = tgt.lng - cur.lng;
+        if (dLng > 180) dLng -= 360;
+        if (dLng < -180) dLng += 360;
+
+        const lerpFactor = Math.min(1, delta * 3.5);
+        cur.lat += dLat * lerpFactor;
+        cur.lng += dLng * lerpFactor;
+        cur.lng = (((cur.lng + 180) % 360) + 360) % 360 - 180;
+
+        if (issGroupRef.current && issStalkRef.current && footprintMeshRef.current) {
+          const issPosition = latLngToVector3(cur.lat, cur.lng, EARTH_RADIUS * ISS_ALTITUDE_SCALE);
+          const groundPosition = latLngToVector3(cur.lat, cur.lng, EARTH_RADIUS * 1.002);
+
+          issGroupRef.current.position.copy(issPosition);
+          issGroupRef.current.lookAt(0, 0, 0);
+          issGroupRef.current.rotateX(Math.PI / 2);
+
+          const stalkGeo = issStalkRef.current.geometry as THREE.BufferGeometry;
+          const positions = new Float32Array([
+            groundPosition.x, groundPosition.y, groundPosition.z,
+            issPosition.x, issPosition.y, issPosition.z,
+          ]);
+          stalkGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+          stalkGeo.computeBoundingSphere();
+
+          footprintMeshRef.current.position.copy(groundPosition);
+          footprintMeshRef.current.lookAt(0, 0, 0);
+        }
+      }
+
       renderer.render(scene, camera);
     };
 
@@ -663,27 +699,21 @@ export default function ISSGlobe() {
     };
   }, [createISSModel]);
 
-  // Update ISS Position & Telemetry in 3D Space
+  // Update ISS Telemetry Target in 3D Space
   useEffect(() => {
-    if (!telemetry || !issGroupRef.current || !issStalkRef.current || !footprintMeshRef.current) return;
+    if (!telemetry) return;
 
-    const issPosition = latLngToVector3(telemetry.latitude, telemetry.longitude, EARTH_RADIUS * ISS_ALTITUDE_SCALE);
-    const groundPosition = latLngToVector3(telemetry.latitude, telemetry.longitude, EARTH_RADIUS * 1.002);
+    targetGlobeCoordsRef.current = {
+      lat: telemetry.latitude,
+      lng: telemetry.longitude,
+    };
 
-    issGroupRef.current.position.copy(issPosition);
-    issGroupRef.current.lookAt(0, 0, 0);
-    issGroupRef.current.rotateX(Math.PI / 2);
-
-    const stalkGeo = issStalkRef.current.geometry as THREE.BufferGeometry;
-    const positions = new Float32Array([
-      groundPosition.x, groundPosition.y, groundPosition.z,
-      issPosition.x, issPosition.y, issPosition.z,
-    ]);
-    stalkGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    stalkGeo.computeBoundingSphere();
-
-    footprintMeshRef.current.position.copy(groundPosition);
-    footprintMeshRef.current.lookAt(0, 0, 0);
+    if (!currentGlobeCoordsRef.current) {
+      currentGlobeCoordsRef.current = {
+        lat: telemetry.latitude,
+        lng: telemetry.longitude,
+      };
+    }
 
     if (sunLightRef.current && telemetry.solar_lat !== undefined) {
       const sunVec = latLngToVector3(telemetry.solar_lat, telemetry.solar_lon, 450);
