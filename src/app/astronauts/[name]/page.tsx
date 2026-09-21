@@ -28,6 +28,13 @@ interface Props {
   params: Promise<{ name: string }>;
 }
 
+export async function generateStaticParams() {
+  const data = await getAstronautsData();
+  return (data.people || []).map((astro) => ({
+    name: encodeURIComponent(astro.name),
+  }));
+}
+
 export async function generateMetadata({ params }: Props) {
   const { name } = await params;
   const decodedName = decodeURIComponent(name);
