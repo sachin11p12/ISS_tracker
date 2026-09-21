@@ -19,25 +19,25 @@ export function AstronautImage({
   fallbackClassName = 'flex h-full w-full items-center justify-center bg-gradient-to-b from-slate-100 to-slate-200 text-slate-400 dark:from-slate-900 dark:to-slate-950 dark:text-slate-600',
   iconClassName = 'h-20 w-20 stroke-[1.2]',
 }: AstronautImageProps) {
-  const [imgStage, setImgStage] = useState<'primary' | 'proxy' | 'local' | 'fallback'>('primary');
+  const [imgStage, setImgStage] = useState<'proxy' | 'direct' | 'local' | 'fallback'>('proxy');
 
   const slug = alt.toLowerCase().replace(/[^a-z0-9]+/g, '-');
   const localSrc = `/images/astronauts/${slug}.svg`;
 
   // Determine current source based on fallback stage
   let currentSrc: string | undefined;
-  if (imgStage === 'primary' && src) {
-    currentSrc = src;
-  } else if (imgStage === 'proxy' && src && src.startsWith('http')) {
+  if (imgStage === 'proxy' && src && src.startsWith('http')) {
     currentSrc = `/api/image-proxy?url=${encodeURIComponent(src)}`;
-  } else if (imgStage === 'local' || (imgStage === 'primary' && !src)) {
+  } else if (imgStage === 'direct' && src) {
+    currentSrc = src;
+  } else if (imgStage === 'local' || (!src && imgStage === 'proxy')) {
     currentSrc = localSrc;
   }
 
   const handleError = () => {
-    if (imgStage === 'primary' && src?.startsWith('http')) {
-      setImgStage('proxy');
-    } else if (imgStage === 'proxy' || (imgStage === 'primary' && !src?.startsWith('http'))) {
+    if (imgStage === 'proxy' && src?.startsWith('http')) {
+      setImgStage('direct');
+    } else if (imgStage === 'direct') {
       setImgStage('local');
     } else {
       setImgStage('fallback');
