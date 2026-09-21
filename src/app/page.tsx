@@ -2,6 +2,7 @@ import React from 'react';
 import { ISSMapWrapper } from '@/components/dashboard/ISSMapWrapper';
 import { ISSStats } from '@/components/dashboard/ISSStats';
 import { LiveStatus } from '@/components/dashboard/LiveStatus';
+import { ISSLiveStream } from '@/components/dashboard/ISSLiveStream';
 import { AstronautList } from '@/components/astronauts/AstronautList';
 import { MissionFacts } from '@/components/dashboard/MissionFacts';
 import { Activity } from 'lucide-react';
@@ -10,9 +11,9 @@ import { Badge } from '@/components/ui/Badge';
 export default function Home() {
   return (
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-6 sm:px-6 lg:px-8">
-      {/* Hero / Live Status Bar */}
+      {/* Hero / Live Status Bar with Live Space Camera on Right */}
       <section className="space-y-4">
-        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <div className="flex items-center gap-2">
               <Badge variant="cyan" size="sm" pulse dot>
@@ -28,6 +29,11 @@ export default function Home() {
             <p className="text-sm text-slate-600 font-normal">
               Live orbital tracking, instantaneous velocity and altitude data, and crew expedition roster.
             </p>
+          </div>
+
+          {/* Right side: Live Video Stream with option to watch live */}
+          <div className="shrink-0">
+            <ISSLiveStream />
           </div>
         </div>
 
