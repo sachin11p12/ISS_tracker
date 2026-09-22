@@ -28,16 +28,45 @@ interface Props {
   params: Promise<{ name: string }>;
 }
 
+function cleanSlug(str: string): string {
+  if (!str) return '';
+  let decoded = str;
+  try {
+    decoded = decodeURIComponent(decoded);
+  } catch {}
+  try {
+    decoded = decodeURIComponent(decoded);
+  } catch {}
+  return decoded.toLowerCase().replace(/%20/g, ' ').replace(/[^a-z0-9]/g, '');
+}
+
 export async function generateStaticParams() {
   const data = await getAstronautsData();
-  return (data.people || []).map((astro) => ({
-    name: encodeURIComponent(astro.name),
-  }));
+  const people = data.people || [];
+  const paramsList: { name: string }[] = [];
+
+  for (const astro of people) {
+    paramsList.push({ name: astro.name });
+    paramsList.push({ name: encodeURIComponent(astro.name) });
+    paramsList.push({ name: astro.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') });
+    if (astro.id) {
+      paramsList.push({ name: astro.id });
+    }
+  }
+
+  return paramsList;
 }
 
 export async function generateMetadata({ params }: Props) {
   const { name } = await params;
-  const decodedName = decodeURIComponent(name);
+  let decodedName = name;
+  try {
+    decodedName = decodeURIComponent(decodeURIComponent(name));
+  } catch {
+    try {
+      decodedName = decodeURIComponent(name);
+    } catch {}
+  }
   return {
     title: `${decodedName} | Astronaut Profile, Education & Research Papers`,
     description: `Complete biography, educational qualifications, career achievements, and scientific research publications for astronaut ${decodedName}.`,
@@ -53,19 +82,36 @@ function formatDaysDisplay(days?: number): string {
 
 export default async function AstronautDetailPage({ params }: Props) {
   const { name } = await params;
-  const decodedName = decodeURIComponent(name).trim();
+  
+  let decodedName = name;
+  try {
+    decodedName = decodeURIComponent(decodeURIComponent(name));
+  } catch {
+    try {
+      decodedName = decodeURIComponent(name);
+    } catch {}
+  }
+  decodedName = decodedName.trim();
+
+  const searchSlug = cleanSlug(name);
 
   const astronautsData = await getAstronautsData();
   const people = astronautsData.people || [];
 
-  // Find matching astronaut by name or id (case-insensitive)
-  const astronaut: Astronaut | undefined = people.find(
-    (p) =>
+  // Find matching astronaut by name, slug, or id with multi-format normalization
+  const astronaut: Astronaut | undefined = people.find((p) => {
+    const pNameSlug = cleanSlug(p.name);
+    const pIdSlug = cleanSlug(p.id || '');
+
+    return (
+      pNameSlug === searchSlug ||
+      pIdSlug === searchSlug ||
       p.name.toLowerCase() === decodedName.toLowerCase() ||
-      p.id.toLowerCase() === decodedName.toLowerCase() ||
-      p.name.toLowerCase().includes(decodedName.toLowerCase()) ||
-      decodedName.toLowerCase().includes(p.name.toLowerCase())
-  );
+      (p.id && p.id.toLowerCase() === decodedName.toLowerCase()) ||
+      searchSlug.includes(pNameSlug) ||
+      pNameSlug.includes(searchSlug)
+    );
+  });
 
   if (!astronaut) {
     return (
